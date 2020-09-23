@@ -49,8 +49,10 @@ import contextlib
 import logging
 import os
 import re
+import asyncio
 
 import discord
+import asyncpg
 from discord.ext import commands
 
 import config
@@ -64,6 +66,7 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> str:
 class Pearl(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=get_prefix)
+        self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
         
         self.logger = logging.getLogger()
         self.all_extensions = []
@@ -88,6 +91,20 @@ class Pearl(commands.Bot):
                 self.logger.info('The extension \'%s\' has been loaded' % extension)
 
         super().run(token)
+
+
+async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.Pool:
+    """Creates a PostgreSQL pool."""
+    def _encode_jsonb(value: dict) -> str:
+        return json.dumps(value)
+
+    def _decode_jsonb(value: str) -> dict:
+        return json.loads(value)
+
+    async def _init(conn: asyncpg.Connection):
+        await conn.set_type_codec('jsonb', schema='pg_catalog', encoder=_encode_jsonb, decoder=_decode_jsonb)
+
+    return await asyncpg.create_pool(uri, init=_init, loop=loop)
 
 
 @contextlib.contextmanager
