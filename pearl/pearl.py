@@ -47,6 +47,8 @@ DEALINGS IN THE SOFTWARE.
 
 import contextlib
 import logging
+import os
+import re
 
 import discord
 from discord.ext import commands
@@ -62,6 +64,30 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> str:
 class Pearl(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=get_prefix)
+        
+        self.logger = logging.getLogger()
+        self.all_extensions = []
+
+        for root, _, items in os.walk('extensions'):
+            files = filter(lambda f: f.endswith('.py'), items)
+
+            for f in files:
+                file_name, _ = os.path.splitext(f)
+                path = os.path.join(root, file_name)
+
+                self.all_extensions.append(re.sub(r'\\|\/', '.', path))
+
+    def run(self, token: str) -> None:
+        """Loads all extensions and then runs the bot."""
+        for extension in self.all_extensions:
+            try:
+                self.load_extension(extension)
+            except:
+                self.logger.exception('The extension \'%s\' could not be loaded' % extension)
+            else:
+                self.logger.info('The extension \'%s\' has been loaded' % extension)
+
+        super().run(token)
 
 
 @contextlib.contextmanager
