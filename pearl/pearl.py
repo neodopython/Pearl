@@ -91,7 +91,7 @@ def setup_logging() -> None:
             logger.removeHandler(handler)
 
 
-def main():
+def main() -> None:
     pearl = Pearl()
     pearl.run(config.token)
 
