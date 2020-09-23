@@ -50,6 +50,7 @@ import logging
 import os
 import re
 import asyncio
+import typing
 
 import discord
 import asyncpg
@@ -58,16 +59,26 @@ from discord.ext import commands
 import config
 
 
-async def get_prefix(bot: commands.Bot, message: discord.Message) -> str:
-    """Get bot's prefix."""
-    return '?'
+async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tuple[str]:
+    """Returns a tuple with guild's custom prefix and global prefix."""
+    query = 'SELECT prefix FROM settings WHERE guild_id = $1'
+    fetch = await bot.pool.fetchrow(query, message.guild.id)
+
+    if not fetch:
+        insert_query = 'INSERT INTO settings (guild_id) VALUES ($1)'
+        await bot.pool.execute(insert_query, message.guild.id)
+
+        # re-fetch data
+        fetch = await bot.pool.fetchrow(query, message.guild.id)
+    
+    return (fetch['prefix'], 'pearl ')
 
 
 class Pearl(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=get_prefix)
         self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
-        
+
         self.logger = logging.getLogger()
         self.all_extensions = []
 

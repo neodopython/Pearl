@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import discord
 from discord.ext import commands
 
 
@@ -33,6 +34,16 @@ class Events(commands.Cog):
     async def on_ready(self):
         bot = self.bot
         print(f'Logged-in with {len(bot.guilds)} guilds and {len(bot.users)} users')
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild: discord.Guild):
+        query = 'INSERT INTO settings (guild_id) VALUES ($1)'
+        await ctx.bot.pool.execute(query, guild.id)
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild: discord.Guild):
+        query = 'DELETE FROM settings WHERE guild_id = $1'
+        await ctx.bot.pool.execute(query, guild.id)
 
 
 def setup(bot: commands.Bot) -> None:
