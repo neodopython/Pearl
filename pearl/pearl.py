@@ -51,6 +51,7 @@ import os
 import re
 import asyncio
 import typing
+import importlib
 
 import discord
 import asyncpg
@@ -90,6 +91,10 @@ class Pearl(commands.Bot):
                 path = os.path.join(root, file_name)
 
                 self.all_extensions.append(re.sub(r'\\|\/', '.', path))
+
+    @property
+    def constants(self):
+        return importlib.import_module('utils.constants')
 
     def run(self, token: str) -> None:
         """Loads all extensions and then runs the bot."""
