@@ -23,7 +23,10 @@ SOFTWARE.
 '''
 
 import asyncpg
+import discord
 from discord.ext import commands
+
+from .embed import Embed
 
 
 class Context(commands.Context):
@@ -31,3 +34,24 @@ class Context(commands.Context):
     def pool(self) -> asyncpg.pool.Pool:
         """Returns a PostgreSQL pool."""
         return self.bot.pool
+
+    @property
+    def color(self):
+        """Returns a invisible embed color."""
+        return 0x2f3136
+
+    def get_embed(self, content: str = None, **kwargs) -> Embed:
+        """ Returns a ready-to-use embed with given content."""
+        author = kwargs.pop('author', {
+            'name': self.author.display_name,
+            'icon_url': self.author.avatar_url
+        })
+        color = kwargs.pop('color', self.color)
+
+        return Embed(description=content, author=author, color=color, **kwargs)
+    
+    async def send(self, content: str = None, **kwargs) -> discord.Message:
+        """This method was overrided to send a rendered cool embed."""
+        delete_after = kwargs.pop('delete_after', None)
+        embed = self.get_embed(content=content, **kwargs)
+        return await super().send(embed=embed, delete_after=delete_after)
