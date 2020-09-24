@@ -41,7 +41,7 @@ class Context(commands.Context):
         return 0x2f3136
 
     def get_embed(self, content: str = None, **kwargs) -> Embed:
-        """ Returns a ready-to-use embed with given content."""
+        """Returns a ready-to-use embed with given content."""
         author = kwargs.pop('author', {
             'name': self.author.display_name,
             'icon_url': self.author.avatar_url
