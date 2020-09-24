@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import asyncpg
 from discord.ext import commands
 
 
 class Context(commands.Context):
     @property
-    def pool(self):
+    def pool(self) -> asyncpg.pool.Pool:
         """Returns a PostgreSQL pool."""
         return self.bot.pool
