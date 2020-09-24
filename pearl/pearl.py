@@ -58,6 +58,7 @@ import asyncpg
 from discord.ext import commands
 
 import config
+from utils.context import Context
 
 
 async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tuple[str]:
@@ -95,6 +96,25 @@ class Pearl(commands.Bot):
     @property
     def constants(self):
         return importlib.import_module('utils.constants')
+
+    async def on_message(self, message: discord.Message) -> None:
+        """Event overwritten to ignore guilds."""
+        if not message.guild:
+            return
+
+        await self.process_commands(message)
+
+    async def process_commands(self, message: discord.Message) -> None:
+        """Event overwritten for adding some checks."""
+        ctx = await self.get_context(message, cls=Context)
+
+        if not ctx.command:
+            return
+
+        if ctx.author.bot:
+            return
+
+        await self.invoke(ctx)
 
     def run(self, token: str) -> None:
         """Loads all extensions and then runs the bot."""

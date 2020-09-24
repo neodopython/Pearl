@@ -34,7 +34,7 @@ class Settings(commands.Cog):
     async def prefix(self, ctx: commands.Context):
         """Shows the guild's custom prefix."""
         query = 'SELECT prefix FROM settings WHERE guild_id = $1'
-        fetch = await ctx.bot.pool.fetchrow(query, ctx.guild.id)
+        fetch = await ctx.pool.fetchrow(query, ctx.guild.id)
 
         prefix = fetch['prefix']
         await ctx.send(f'O prefixo deste servidor é `{prefix}`.')
@@ -47,13 +47,13 @@ class Settings(commands.Cog):
             return await ctx.send(f'Prefixo muito grande, o limite é `{self.limit}` caracteres.')
 
         query = 'SELECT prefix FROM settings WHERE guild_id = $1'
-        fetch = await ctx.bot.pool.fetchrow(query, ctx.guild.id)
+        fetch = await ctx.pool.fetchrow(query, ctx.guild.id)
 
         if prefix == fetch['prefix']:
             return await ctx.send('Este já é o prefixo atual do servidor.')
 
         query = 'UPDATE settings SET prefix = $2 WHERE guild_id = $1'
-        await ctx.bot.pool.execute(query, ctx.guild.id, prefix)
+        await ctx.pool.execute(query, ctx.guild.id, prefix)
 
         await ctx.send(f'Você alterou o prefixo do servidor para `{prefix}`.')
 
