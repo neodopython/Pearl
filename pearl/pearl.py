@@ -156,7 +156,7 @@ def setup_logging() -> None:
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
 
-        handler = logging.FileHandler(filename='pearl.log', encoding='utf-8', mode='w')
+        handler = logging.FileHandler(filename='logs/pearl.log', encoding='utf-8', mode='w')
         formatter = logging.Formatter('[{asctime}] [{levelname}] {name}: {message}', dt_format, style='{')
     
         handler.setFormatter(formatter)
