@@ -1,0 +1,153 @@
+'''
+MIT License
+
+Copyright (c) 2020 Caio Alexandre
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
+import typing
+import re
+
+import lavalink
+from discord.ext import commands
+
+import config
+
+
+class MusicException(Exception):
+    pass
+
+
+class RequesterNotConnected(MusicException):
+    pass
+
+
+class BotNotConnected(MusicException):
+    pass
+
+
+class CantConnect(MusicException):
+    pass
+
+
+class WrongChannel(MusicException):
+    pass
+
+
+class NothingFound(MusicException):
+    pass
+
+
+url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+
+class Music(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        lavalink.add_event_hook(self.track_hook)
+
+    def cog_unload(self):
+        self.lavalink._event_hooks.clear()
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        if not hasattr(self, 'lavalink'):
+            self.lavalink = lavalink.Client(self.bot.user.id, connect_back=True)
+            self.lavalink.add_node('127.0.0.1', 2333, config.lavalink, 'br', 'pearl')
+            self.bot.add_listener(self.lavalink.voice_update_handler, 'on_socket_response')
+
+    async def track_hook(self, event: lavalink.Event) -> None:
+        if isinstance(event, lavalink.events.QueueEndEvent):
+            guild_id = int(event.player.guild_id)
+            await self.connect_to(guild_id, None)
+
+    async def connect_to(self, guild_id: int, channel_id: typing.Optional[str]) -> None:
+        ws = self.bot._connection._get_websocket(guild_id)
+        await ws.voice_state(str(guild_id), channel_id)
+
+    async def cog_before_invoke(self, ctx: commands.Context):
+        await self.ensure_voice(ctx)
+
+    async def ensure_voice(self, ctx: commands.Context) -> None:
+        player = self.lavalink.player_manager.create(ctx.guild.id, endpoint=str(ctx.guild.region))
+        should_connect = ctx.command.name in ('play',)
+
+        if not ctx.author.voice or not ctx.author.voice.channel:
+            raise RequesterNotConnected('Join a voicechannel first')
+
+        if not player.is_connected:
+            if not should_connect:
+                raise BotNotConnected('Not connected.')
+
+            permissions = ctx.author.voice.channel.permissions_for(ctx.me)
+
+            if not permissions.connect or not permissions.speak:
+                raise CantConnect('Connect and Speak permissions is needed')
+
+            player.store('channel', ctx.channel.id)
+            await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
+        else:
+            if int(player.channel_id) != ctx.author.voice.channel.id:
+                raise WrongChannel('You need to be in my voicechannel')
+
+    @commands.command(aliases=['p'])
+    async def play(self, ctx: commands.Context, *, query: str):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        query = query.strip('<>')
+
+        if not url_regex.match(query):
+            query = f'ytsearch:{query}'
+
+        results = await player.node.get_tracks(query)
+
+        if not results or not results['tracks']:
+            raise NothingFound('No tracks found')
+
+        if results['loadType'] == 'PLAYLIST_LOADED':
+            tracks = results['tracks']
+
+            for track in tracks:
+                player.add(requester=ctx.author.id, track=track)
+
+            playlist_name = results['playlistInfo']['name']
+            tracks_length = f'`{len(tracks)}` música' + ('' if len(tracks) == 1 else 's')
+
+            title = 'Playlist adicionada'
+            description = f'{playlist_name} - {tracks_length}'
+        else:
+            track = results['tracks'][0]
+
+            track_name = track['info']['title']
+            track_link = track['info']['uri']
+
+            title = 'Música adicionada'
+            description = f'[{track_name}]({track_link})'
+
+            track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
+            player.add(requester=ctx.author.id, track=track)
+
+        await ctx.send(f'**{title}**\n{description}')
+
+        if not player.is_playing:
+            await player.play()
+
+
+def setup(bot: commands.Bot) -> None:
+    bot.add_cog(Music(bot))
