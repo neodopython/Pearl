@@ -24,8 +24,10 @@ SOFTWARE.
 
 import typing
 import re
+from datetime import timedelta
 
 import lavalink
+import humanize
 from discord.ext import commands
 
 import config
@@ -124,6 +126,16 @@ class Music(commands.Cog):
 
         if not player.is_playing:
             await player.play()
+
+    @commands.command()
+    async def seek(self, ctx: commands.Context, time: int):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+
+        time += 1
+        delta = humanize.precisedelta(timedelta(seconds=time), minimum_unit='seconds')
+
+        await player.seek(time * 1000)
+        await ctx.send(f'Tempo alterado para **{delta}**.')
 
 
 def setup(bot: commands.Bot) -> None:

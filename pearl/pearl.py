@@ -55,6 +55,7 @@ import importlib
 
 import discord
 import asyncpg
+import humanize
 from discord.ext import commands
 
 import config
@@ -171,6 +172,8 @@ def setup_logging() -> None:
 
 
 def main() -> None:
+    humanize.i18n.activate('pt_BR')
+    
     pearl = Pearl()
     pearl.run(config.token)
 
