@@ -148,6 +148,13 @@ class Music(commands.Cog):
         await ctx.send(f'Música foi resumida por {ctx.author.mention}.')
 
     @commands.command()
+    async def skip(self, ctx: commands.Context):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        await player.skip()
+
+        await ctx.send(f'Música pulada por {ctx.author.mention}.')
+
+    @commands.command()
     async def seek(self, ctx: commands.Context, time: int):
         player = self.lavalink.player_manager.get(ctx.guild.id)
 
