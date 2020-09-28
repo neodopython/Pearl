@@ -29,30 +29,7 @@ import lavalink
 from discord.ext import commands
 
 import config
-
-
-class MusicException(Exception):
-    pass
-
-
-class RequesterNotConnected(MusicException):
-    pass
-
-
-class BotNotConnected(MusicException):
-    pass
-
-
-class CantConnect(MusicException):
-    pass
-
-
-class WrongChannel(MusicException):
-    pass
-
-
-class NothingFound(MusicException):
-    pass
+from utils.errors import *
 
 
 url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
@@ -90,22 +67,22 @@ class Music(commands.Cog):
         should_connect = ctx.command.name in ('play',)
 
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise RequesterNotConnected('Join a voicechannel first')
+            raise RequesterNotConnected()
 
         if not player.is_connected:
             if not should_connect:
-                raise BotNotConnected('Not connected.')
+                raise BotNotConnected()
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
             if not permissions.connect or not permissions.speak:
-                raise CantConnect('Connect and Speak permissions is needed')
+                raise CannotConnect()
 
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
             if int(player.channel_id) != ctx.author.voice.channel.id:
-                raise WrongChannel('You need to be in my voicechannel')
+                raise WrongChannel()
 
     @commands.command(aliases=['p'])
     async def play(self, ctx: commands.Context, *, query: str):
@@ -118,7 +95,7 @@ class Music(commands.Cog):
         results = await player.node.get_tracks(query)
 
         if not results or not results['tracks']:
-            raise NothingFound('No tracks found')
+            raise NothingFound()
 
         if results['loadType'] == 'PLAYLIST_LOADED':
             tracks = results['tracks']
