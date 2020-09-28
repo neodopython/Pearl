@@ -165,6 +165,16 @@ class Music(commands.Cog):
         await player.seek(time * 1000)
         await ctx.send(f'Tempo alterado para {delta}.')
 
+    @commands.command()
+    async def volume(self, ctx: commands.Context, volume: int):
+        if not 0 <= volume <= 100:
+            raise InvalidVolume()
+
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        
+        await player.set_volume(volume * 10)
+        await ctx.send(f'Volume alterado para `{volume}%`')
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))

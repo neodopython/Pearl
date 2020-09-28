@@ -64,3 +64,8 @@ class AlreadyResumed(MusicException):
 class InvalidSeekTime(MusicException):
     def __init__(self):
         super().__init__('Invalid seek time')
+
+
+class InvalidVolume(MusicException):
+    def __init__(self):
+        super().__init__('Invalid volume')
