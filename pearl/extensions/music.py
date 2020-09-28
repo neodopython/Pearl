@@ -147,7 +147,7 @@ class Music(commands.Cog):
         await player.set_pause(False)
         await ctx.send(f'Música foi resumida por {ctx.author.mention}.')
 
-    @commands.command()
+    @commands.command(aliases=['s'])
     async def skip(self, ctx: commands.Context):
         player = self.lavalink.player_manager.get(ctx.guild.id)
         await player.skip()
