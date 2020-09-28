@@ -38,12 +38,12 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         query = 'INSERT INTO settings (guild_id) VALUES ($1)'
-        await ctx.pool.execute(query, guild.id)
+        await self.bot.pool.execute(query, guild.id)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
         query = 'DELETE FROM settings WHERE guild_id = $1'
-        await ctx.pool.execute(query, guild.id)
+        await self.bot.pool.execute(query, guild.id)
 
 
 def setup(bot: commands.Bot) -> None:
