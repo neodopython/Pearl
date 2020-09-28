@@ -156,10 +156,11 @@ class Music(commands.Cog):
 
     @commands.command()
     async def seek(self, ctx: commands.Context, time: int):
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        if time < 0:
+            raise InvalidSeekTime()
 
-        time += 1
-        delta = humanize.precisedelta(timedelta(seconds=time), minimum_unit='seconds')
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        delta = humanize.precisedelta(timedelta(seconds=time or 1), minimum_unit='seconds')
 
         await player.seek(time * 1000)
         await ctx.send(f'Tempo alterado para {delta}.')

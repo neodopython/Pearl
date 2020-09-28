@@ -59,3 +59,8 @@ class AlreadyPaused(MusicException):
 class AlreadyResumed(MusicException):
     def __init__(self):
         super().__init__('Player already resumed')
+
+
+class InvalidSeekTime(MusicException):
+    def __init__(self):
+        super().__init__('Invalid seek time')
