@@ -155,7 +155,7 @@ class Music(commands.Cog):
         delta = humanize.precisedelta(timedelta(seconds=time), minimum_unit='seconds')
 
         await player.seek(time * 1000)
-        await ctx.send(f'Tempo alterado para **{delta}**.')
+        await ctx.send(f'Tempo alterado para {delta}.')
 
 
 def setup(bot: commands.Bot) -> None:
