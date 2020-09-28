@@ -49,3 +49,13 @@ class WrongChannel(MusicException):
 class NothingFound(MusicException):
     def __init__(self):
         super().__init__('No tracks found')
+
+
+class AlreadyPaused(MusicException):
+    def __init__(self):
+        super().__init__('Player already paused')
+
+
+class AlreadyResumed(MusicException):
+    def __init__(self):
+        super().__init__('Player already resumed')

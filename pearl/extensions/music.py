@@ -128,6 +128,26 @@ class Music(commands.Cog):
             await player.play()
 
     @commands.command()
+    async def pause(self, ctx: commands.Context):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        
+        if player.paused:
+            raise AlreadyPaused()
+
+        await player.set_pause(True)
+        await ctx.send(f'Música foi pausada por {ctx.author.mention}.')
+
+    @commands.command()
+    async def resume(self, ctx: commands.Context):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        
+        if not player.paused:
+            raise AlreadyResumed()
+
+        await player.set_pause(False)
+        await ctx.send(f'Música foi resumida por {ctx.author.mention}.')
+
+    @commands.command()
     async def seek(self, ctx: commands.Context, time: int):
         player = self.lavalink.player_manager.get(ctx.guild.id)
 
