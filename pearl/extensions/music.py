@@ -28,6 +28,7 @@ from datetime import timedelta
 
 import lavalink
 import humanize
+import discord
 from discord.ext import commands
 
 import config
@@ -113,7 +114,7 @@ class Music(commands.Cog):
         else:
             track = results['tracks'][0]
 
-            track_name = track['info']['title']
+            track_name = discord.utils.escape_markdown(track['info']['title'])
             track_link = track['info']['uri']
 
             title = 'Música adicionada'
