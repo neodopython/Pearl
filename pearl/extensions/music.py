@@ -176,6 +176,23 @@ class Music(commands.Cog):
         await player.set_volume(volume * 10)
         await ctx.send(f'Volume alterado para {volume}%.')
 
+    @commands.command(aliases=['np'])
+    async def nowplaying(self, ctx: commands.Context):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+        current = player.current
+
+        title = discord.utils.escape_markdown(current.title)
+        duration = humanize.precisedelta(timedelta(milliseconds=current.duration))
+
+        # TODO: Add "is_stream" and current music timestamp.
+        messages = [
+            f'Música: [{title}]({current.uri})',
+            f'Canal: `{current.author}`',
+            f'Duração: **{duration}**'
+        ]
+
+        await ctx.send('\n'.join(messages))
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))
