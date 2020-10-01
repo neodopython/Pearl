@@ -191,6 +191,12 @@ class Music(commands.Cog):
             f'Duração: **{duration}**'
         ]
 
+        size = 24
+        placeholder = '▬' * size
+
+        percentage = int((size * int(player.position)) / int(current.duration))
+        messages.append(placeholder[:percentage] + '○' + placeholder[percentage + 1:])
+
         await ctx.send('\n'.join(messages))
 
 
