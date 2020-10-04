@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import textwrap
+
 import discord
 from discord.ext import menus
 
@@ -34,3 +36,27 @@ class _BaseMenu(menus.MenuPages):
 
             await self.message.remove_reaction(payload.emoji, payload.member)
         await super().update(payload)
+
+
+class Menu(_BaseMenu):
+    def __init__(self, data: str, **kwargs):
+        paginator = TextPaginator(data, **kwargs)
+        super().__init__(paginator, delete_message_after=True, check_embeds=True)
+
+
+class TextPaginator(menus.ListPageSource):
+    def __init__(self, text: str, **kwargs):
+        wrapped = textwrap.wrap(text, width=2012)
+        data = [f'{item}...' if item != wrapped[-1] else item for item in wrapped] or ['[empty string]']
+
+        self.codeblock = kwargs.pop('codeblock', False)
+        self.kwargs = kwargs
+        super().__init__(data, per_page=1)
+
+    async def format_page(self, menu: menus.Menu, entry: str):
+        if self.codeblock:
+            entry = f'```py\n{entry}```'
+
+        embed = menu.ctx.get_embed(entry, **self.kwargs)
+        embed.set_footer(text=f'Página {menu.current_page + 1}/{self.get_max_pages()}')
+        return embed
