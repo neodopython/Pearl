@@ -40,10 +40,6 @@ class Owner(commands.Cog):
         self.bot = bot
         self._last_result = None
 
-    @commands.group(aliases=['wd'], invoke_without_command=True, ignore_extra=True)
-    async def watchdog(self, ctx: commands.Context):
-        pass
-
     def get_env(self, ctx: commands.Context) -> typing.Dict[str, typing.Any]:
         env = {
             'ctx': ctx,
@@ -54,6 +50,16 @@ class Owner(commands.Cog):
 
         env.update(globals())
         return env
+
+    async def cog_check(self, ctx: commands.Context):
+        if await ctx.bot.is_owner(ctx.author):
+            return True
+
+        raise commands.NotOwner('You do not own this bot')
+
+    @commands.group(aliases=['wd'], invoke_without_command=True, ignore_extra=True)
+    async def watchdog(self, ctx: commands.Context):
+        pass
 
     @watchdog.command(name='python', aliases=['py'])
     async def watchdog_python(self, ctx: commands.Context, *, code: codeblock_converter):
