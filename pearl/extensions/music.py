@@ -89,6 +89,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['p'])
     async def play(self, ctx: commands.Context, *, query: str):
+        """Plays a music with given query."""
         player = self.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
 
@@ -130,6 +131,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def pause(self, ctx: commands.Context):
+        """Pauses the current player."""
         player = self.lavalink.player_manager.get(ctx.guild.id)
         
         if player.paused:
@@ -140,6 +142,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def resume(self, ctx: commands.Context):
+        """Resumes the current player."""
         player = self.lavalink.player_manager.get(ctx.guild.id)
         
         if not player.paused:
@@ -150,11 +153,13 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['s'])
     async def skip(self, ctx: commands.Context):
+        """Skips the current music."""
         player = self.lavalink.player_manager.get(ctx.guild.id)
         await player.skip()
 
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
 
+    # TODO: Add docstring for this method.
     @commands.command()
     async def seek(self, ctx: commands.Context, time: int):
         if time < 0:
@@ -168,6 +173,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def volume(self, ctx: commands.Context, volume: int):
+        """Changes the player volume."""
         if not 0 <= volume <= 100:
             raise InvalidVolume()
 
@@ -178,6 +184,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['np'])
     async def nowplaying(self, ctx: commands.Context):
+        """Shows what music is currently playing."""
         player = self.lavalink.player_manager.get(ctx.guild.id)
         current = player.current
 

@@ -63,6 +63,7 @@ class Owner(commands.Cog):
 
     @watchdog.command(name='python', aliases=['py'])
     async def watchdog_python(self, ctx: commands.Context, *, code: codeblock_converter):
+        """Performs code evaluation in Python."""
         env = self.get_env(ctx)
         stdout = StringIO()
 
