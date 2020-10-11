@@ -79,7 +79,7 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tupl
 
 class Pearl(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=get_prefix)
+        super().__init__(command_prefix=get_prefix, intents=discord.Intents.all())
         self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
 
         self.logger = logging.getLogger()
