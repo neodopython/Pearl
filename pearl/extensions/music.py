@@ -103,28 +103,33 @@ class Music(commands.Cog):
 
         if results['loadType'] == 'PLAYLIST_LOADED':
             tracks = results['tracks']
+            total_length = 0
 
             for track in tracks:
                 player.add(requester=ctx.author.id, track=track)
+                total_length += track['info']['length']
 
             playlist_name = results['playlistInfo']['name']
-            tracks_length = f'`{len(tracks)}` música' + ('' if len(tracks) == 1 else 's')
+            total_tracks = f'{len(tracks)} música' + ('' if len(tracks) == 1 else 's')
 
-            title = 'Playlist adicionada'
-            description = f'{playlist_name} - {tracks_length}'
+            title = f'Playlist adicionada - {total_tracks}'
+            info = f'Playlist: `{playlist_name}`'
         else:
             track = results['tracks'][0]
+            total_length = track['info']['length']
 
-            track_name = discord.utils.escape_markdown(track['info']['title'])
-            track_link = track['info']['uri']
+            name = discord.utils.escape_markdown(track['info']['title'])
+            url = track['info']['uri']
+            author = track['info']['author']
 
             title = 'Música adicionada'
-            description = f'[{track_name}]({track_link})'
+            info = f'Música: [{name}]({url})\nCanal: **{author}**'
 
             track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
             player.add(requester=ctx.author.id, track=track)
 
-        await ctx.send(f'**{title}**\n{description}')
+        duration = humanize.precisedelta(timedelta(milliseconds=total_length))
+        await ctx.send(f'{info}\nDuração: **{duration}**', title=title)
 
         if not player.is_playing:
             await player.play()
