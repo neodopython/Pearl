@@ -219,6 +219,23 @@ class Music(commands.Cog):
 
         await ctx.send('\n'.join(messages))
 
+    @commands.command(aliases=['dc', 'stop'])
+    async def disconnect(self, ctx: commands.Context):
+        player = self.lavalink.player_manager.get(ctx.guild.id)
+
+        if not player.is_connected:
+            raise BotNotConnected()
+
+        if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
+            raise WrongChannel()
+
+        player.queue.clear()
+        await player.stop()
+        await self.connect_to(ctx.guild.id, None)
+
+        await ctx.send(f'Fui desconectada por {ctx.author.mention}.')
+
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))
