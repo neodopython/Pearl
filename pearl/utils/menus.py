@@ -23,9 +23,15 @@ SOFTWARE.
 '''
 
 import textwrap
+import typing
 
 import discord
 from discord.ext import menus
+
+
+class InvalidData(Exception):
+    def __init__(self):
+        super().__init__('Invalid data type')
 
 
 class _BaseMenu(menus.MenuPages):
@@ -39,7 +45,14 @@ class _BaseMenu(menus.MenuPages):
 
 
 class Menu(_BaseMenu):
-    def __init__(self, data: str, **kwargs):
+    def __init__(self, data: typing.Union[str, typing.List[str]], **kwargs):
+        if isinstance(data, list):
+            Paginator = ListPaginator
+        elif isinstance(data, str):
+            Paginator = TextPaginator
+        else:
+            raise InvalidData()
+        
         paginator = TextPaginator(data, **kwargs)
         super().__init__(paginator, delete_message_after=True, check_embeds=True)
 
@@ -56,6 +69,21 @@ class TextPaginator(menus.ListPageSource):
     async def format_page(self, menu: menus.Menu, entry: str):
         if self.codeblock:
             entry = f'```py\n{entry}```'
+
+        embed = menu.ctx.get_embed(entry, **self.kwargs)
+        embed.set_footer(text=f'Página {menu.current_page + 1}/{self.get_max_pages()}')
+        return embed
+
+
+class ListPaginator(menus.ListPageSource):
+    def __init__(self, data: typing.List[str], **kwargs):
+        per_page = kwargs.pop('per_page', 1)
+        self.kwargs = kwargs
+        super().__init__(data, per_page=per_page)
+
+    async def format_page(self, menu: menus.Menu, entry: typing.Union[str, typing.List[str]]):
+        if isinstance(entry, list):
+            entry = '\n'.join(entry)
 
         embed = menu.ctx.get_embed(entry, **self.kwargs)
         embed.set_footer(text=f'Página {menu.current_page + 1}/{self.get_max_pages()}')
