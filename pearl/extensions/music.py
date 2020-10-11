@@ -41,17 +41,16 @@ url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+        if not hasattr(bot, 'lavalink'):
+            bot.lavalink = lavalink.Client(bot.user.id, connect_back=True)
+            bot.lavalink.add_node('127.0.0.1', 2333, config.lavalink, 'br', 'pearl')
+            bot.add_listener(bot.lavalink.voice_update_handler, 'on_socket_response')
+
         lavalink.add_event_hook(self.track_hook)
 
     def cog_unload(self):
-        self.lavalink._event_hooks.clear()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        if not hasattr(self, 'lavalink'):
-            self.lavalink = lavalink.Client(self.bot.user.id, connect_back=True)
-            self.lavalink.add_node('127.0.0.1', 2333, config.lavalink, 'br', 'pearl')
-            self.bot.add_listener(self.lavalink.voice_update_handler, 'on_socket_response')
+        self.bot.lavalink._event_hooks.clear()
 
     async def track_hook(self, event: lavalink.Event) -> None:
         if isinstance(event, lavalink.events.QueueEndEvent):
@@ -66,7 +65,7 @@ class Music(commands.Cog):
         await self.ensure_voice(ctx)
 
     async def ensure_voice(self, ctx: commands.Context) -> None:
-        player = self.lavalink.player_manager.create(ctx.guild.id, endpoint=str(ctx.guild.region))
+        player = ctx.bot.lavalink.player_manager.create(ctx.guild.id, endpoint=str(ctx.guild.region))
         should_connect = ctx.command.name in ('play',)
 
         if not ctx.author.voice or not ctx.author.voice.channel:
@@ -90,7 +89,7 @@ class Music(commands.Cog):
     @commands.command(aliases=['p'])
     async def play(self, ctx: commands.Context, *, query: str):
         """Plays a music with given query."""
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
 
         if not url_regex.match(query):
@@ -141,7 +140,7 @@ class Music(commands.Cog):
     @commands.command()
     async def pause(self, ctx: commands.Context):
         """Pauses the current player."""
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
         if player.paused:
             raise AlreadyPaused()
@@ -152,7 +151,7 @@ class Music(commands.Cog):
     @commands.command()
     async def resume(self, ctx: commands.Context):
         """Resumes the current player."""
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
         if not player.paused:
             raise AlreadyResumed()
@@ -163,7 +162,7 @@ class Music(commands.Cog):
     @commands.command(aliases=['s'])
     async def skip(self, ctx: commands.Context):
         """Skips the current music."""
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         await player.skip()
 
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
@@ -174,7 +173,7 @@ class Music(commands.Cog):
         if time < 0:
             raise InvalidSeekTime()
 
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         delta = humanize.precisedelta(timedelta(seconds=time or 1), minimum_unit='seconds')
 
         await player.seek(time * 1000)
@@ -186,7 +185,7 @@ class Music(commands.Cog):
         if not 0 <= volume <= 100:
             raise InvalidVolume()
 
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
         await player.set_volume(volume * 10)
         await ctx.send(f'Volume alterado para {volume}%.')
@@ -194,7 +193,7 @@ class Music(commands.Cog):
     @commands.command(aliases=['np'])
     async def nowplaying(self, ctx: commands.Context):
         """Shows what music is currently playing."""
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         current = player.current
 
         title = discord.utils.escape_markdown(current.title)
@@ -221,7 +220,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['dc', 'stop'])
     async def disconnect(self, ctx: commands.Context):
-        player = self.lavalink.player_manager.get(ctx.guild.id)
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.is_connected:
             raise BotNotConnected()
