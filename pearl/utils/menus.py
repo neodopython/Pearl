@@ -53,7 +53,7 @@ class Menu(_BaseMenu):
         else:
             raise InvalidData()
         
-        paginator = TextPaginator(data, **kwargs)
+        paginator = Paginator(data, **kwargs)
         super().__init__(paginator, delete_message_after=True, check_embeds=True)
 
 
