@@ -220,6 +220,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['dc', 'stop'])
     async def disconnect(self, ctx: commands.Context):
+        """Stop player and disconnects bot from channel."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.is_connected:
