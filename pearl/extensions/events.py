@@ -31,11 +31,6 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
-        bot = self.bot
-        print(f'Logged-in with {len(bot.guilds)} guilds and {len(bot.users)} users')
-
-    @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         query = 'INSERT INTO settings (guild_id) VALUES ($1)'
         await self.bot.pool.execute(query, guild.id)

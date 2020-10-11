@@ -105,6 +105,18 @@ class Pearl(commands.Bot):
 
         await self.process_commands(message)
 
+    async def on_ready(self) -> None:
+        """Loads all extensions when bot is ready."""
+        for extension in self.all_extensions:
+            try:
+                self.load_extension(extension)
+            except:
+                self.logger.exception('The extension \'%s\' could not be loaded' % extension)
+            else:
+                self.logger.info('The extension \'%s\' has been loaded' % extension)
+
+        print(f'Logged-in with {len(self.guilds)} guilds and {len(self.users)} users')
+
     async def process_commands(self, message: discord.Message) -> None:
         """Event overwritten for adding some checks."""
         ctx = await self.get_context(message, cls=Context)
@@ -116,18 +128,6 @@ class Pearl(commands.Bot):
             return
 
         await self.invoke(ctx)
-
-    def run(self, token: str) -> None:
-        """Loads all extensions and then runs the bot."""
-        for extension in self.all_extensions:
-            try:
-                self.load_extension(extension)
-            except:
-                self.logger.exception('The extension \'%s\' could not be loaded' % extension)
-            else:
-                self.logger.info('The extension \'%s\' has been loaded' % extension)
-
-        super().run(token)
 
 
 async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.Pool:
