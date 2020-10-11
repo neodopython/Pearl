@@ -128,7 +128,11 @@ class Music(commands.Cog):
             track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
             player.add(requester=ctx.author.id, track=track)
 
-        duration = humanize.precisedelta(timedelta(milliseconds=total_length))
+        try:
+            duration = humanize.precisedelta(timedelta(milliseconds=total_length))
+        except OverflowError:
+            duration = '**[ao vivo]**'
+
         await ctx.send(f'{info}\nDuração: **{duration}**', title=title)
 
         if not player.is_playing:
@@ -194,7 +198,11 @@ class Music(commands.Cog):
         current = player.current
 
         title = discord.utils.escape_markdown(current.title)
-        duration = humanize.precisedelta(timedelta(milliseconds=current.duration))
+
+        try:
+            duration = humanize.precisedelta(timedelta(milliseconds=current.duration))
+        except OverflowError:
+            duration = '**[ao vivo]**'
 
         # TODO: Add "is_stream" and current music timestamp.
         messages = [
