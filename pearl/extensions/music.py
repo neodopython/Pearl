@@ -199,7 +199,7 @@ class Music(commands.Cog):
         # TODO: Add "is_stream" and current music timestamp.
         messages = [
             f'Música: [{title}]({current.uri})',
-            f'Canal: `{current.author}`',
+            f'Canal: **{current.author}**',
             f'Duração: **{duration}**'
         ]
 
