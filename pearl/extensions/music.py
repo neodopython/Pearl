@@ -33,6 +33,7 @@ from discord.ext import commands
 
 import config
 from utils.errors import *
+from utils.menus import Menu
 
 
 url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
@@ -237,6 +238,18 @@ class Music(commands.Cog):
 
         await ctx.send(f'Fui desconectada por {ctx.author.mention}.')
 
+    @commands.command(aliases=['q'])
+    async def queue(self, ctx: commands.Context):
+        """Show the current queue."""
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+        queue = player.queue
+
+        titles = []
+        for index, track in enumerate(queue, start=1):
+            titles.append(f'`{index}.` **{track.title}** ({track.author})')
+
+        menu = Menu(titles or 'Não há nada na playlist.', per_page=12)
+        await menu.start(ctx)
 
 
 def setup(bot: commands.Bot) -> None:
