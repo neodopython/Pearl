@@ -58,6 +58,28 @@ class Music(commands.Cog):
             guild_id = int(event.player.guild_id)
             await self.connect_to(guild_id, None)
 
+        if isinstance(event, lavalink.events.TrackStartEvent):
+            player = event.player
+            track = player.current
+
+            ctx = player.fetch('ctx')
+            requester = ctx.guild.get_member(track.requester).mention or '**[usuário desconhecido]**'
+
+            try:
+                duration = humanize.precisedelta(timedelta(milliseconds=track.duration))
+            except OverflowError:
+                duration = '**[ao vivo]**'
+
+
+            messages = [
+                f'Música: [{track.title}]({track.uri})',
+                f'Canal: **{track.author}**',
+                f'Duração: **{duration}**',
+                f'Solicitante: {requester}'
+            ]
+
+            await ctx.send('\n'.join(messages), title='Tocando agora')
+
     async def connect_to(self, guild_id: int, channel_id: typing.Optional[str]) -> None:
         ws = self.bot._connection._get_websocket(guild_id)
         await ws.voice_state(str(guild_id), channel_id)
@@ -81,7 +103,7 @@ class Music(commands.Cog):
             if not permissions.connect or not permissions.speak:
                 raise CannotConnect()
 
-            player.store('channel', ctx.channel.id)
+            player.store('ctx', ctx)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
             if int(player.channel_id) != ctx.author.voice.channel.id:
