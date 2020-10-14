@@ -197,6 +197,7 @@ class Music(commands.Cog):
         current = player.current
 
         title = discord.utils.escape_markdown(current.title)
+        requester = ctx.guild.get_member(current.requester).mention or '**[usuário desconhecido]**'
 
         try:
             duration = humanize.precisedelta(timedelta(milliseconds=current.duration))
@@ -207,7 +208,8 @@ class Music(commands.Cog):
         messages = [
             f'Música: [{title}]({current.uri})',
             f'Canal: **{current.author}**',
-            f'Duração: **{duration}**'
+            f'Duração: **{duration}**',
+            f'Solicitante: {requester}'
         ]
 
         size = 24
