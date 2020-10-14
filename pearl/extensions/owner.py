@@ -99,6 +99,12 @@ class Owner(commands.Cog):
             menu = Menu(output, fields=fields, codeblock=True)
             await menu.start(ctx)
 
+    @watchdog.command(name='logout', aliases=['shutdown'])
+    async def watchdog_logout(self, ctx: commands.Context):
+        """Logs this bot out."""
+        await ctx.send('Desligando. Até mais, 👋.')
+        await ctx.bot.logout()
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Owner(bot))
