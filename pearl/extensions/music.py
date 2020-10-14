@@ -70,7 +70,6 @@ class Music(commands.Cog):
             except OverflowError:
                 duration = '**[ao vivo]**'
 
-
             messages = [
                 f'Música: [{track.title}]({track.uri})',
                 f'Canal: **{track.author}**',
