@@ -54,7 +54,7 @@ class Menu(_BaseMenu):
             raise InvalidData()
         
         paginator = Paginator(data, **kwargs)
-        super().__init__(paginator, delete_message_after=True, check_embeds=True)
+        super().__init__(paginator, clear_reactions_after=True, check_embeds=True)
 
 
 class TextPaginator(menus.ListPageSource):
