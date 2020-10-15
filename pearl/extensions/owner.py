@@ -25,6 +25,7 @@ SOFTWARE.
 import typing
 import re
 import textwrap
+import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 
@@ -104,6 +105,48 @@ class Owner(commands.Cog):
         """Logs this bot out."""
         await ctx.send('Desligando. Até mais, 👋.')
         await ctx.bot.logout()
+
+    @watchdog.command(name='load', aliases=['l', 'reload', 'r'])
+    async def watchdog_load(self, ctx: commands.Context, *extensions: str):
+        """Reloads the given extension names."""
+        extensions = extensions or ctx.bot.all_extensions
+        paginator = commands.Paginator(prefix='', suffix='')
+
+        for extension in extensions:
+            method, icon = (
+                (ctx.bot.reload_extension, '🔁')
+                if extension in ctx.bot.extensions else
+                (ctx.bot.load_extension, '📥')
+            )
+
+            try:
+                method(extension)
+            except Exception as e:
+                traceback_data = ''.join(traceback.format_exception(type(e), e, e.__traceback__, 1))
+                paginator.add_line(f'⚠️ `{extension}`\n```py\n{traceback_data}```')
+            else:
+                paginator.add_line(f'{icon} `{extension}`')
+
+        menu = Menu(paginator.pages)
+        await menu.start(ctx)
+
+    @watchdog.command(name='unload', aliaes=['u'])
+    async def watchdog_unload(self, ctx: commands.Context, *extensions: str):
+        """Unloads the given extension names."""
+        paginator = commands.Paginator(prefix='', suffix='')
+        icon = '📤'
+
+        for extension in extensions:
+            try:
+                ctx.bot.unload_extension(extension)
+            except Exception as e:
+                traceback_data = ''.join(traceback.format_exception(type(e), e, e.__traceback__, 1))
+                paginator.add_line(f'⚠️ `{extension}`\n```py\n{traceback_data}```')
+            else:
+                paginator.add_line(f'📤 `{extension}`')
+
+        menu = Menu(paginator.pages)
+        await menu.start(ctx)
 
 
 def setup(bot: commands.Bot) -> None:
