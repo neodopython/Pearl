@@ -185,9 +185,9 @@ class Music(commands.Cog):
     async def skip(self, ctx: commands.Context):
         """Skips the current music."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
-        await player.skip()
-
+        
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
+        await player.skip()
 
     # TODO: Add docstring for this method.
     @commands.command()
