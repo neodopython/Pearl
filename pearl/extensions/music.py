@@ -24,7 +24,9 @@ SOFTWARE.
 
 import typing
 import re
+import asyncio
 from datetime import timedelta
+from async_timeout import timeout
 
 import lavalink
 import humanize
@@ -55,14 +57,28 @@ class Music(commands.Cog):
 
     async def track_hook(self, event: lavalink.Event) -> None:
         if isinstance(event, lavalink.events.QueueEndEvent):
-            guild_id = int(event.player.guild_id)
-            await self.connect_to(guild_id, None)
+            player = event.player
+
+            still_active = player.fetch('still_active')
+            still_active.clear()
+
+            try:
+                async with timeout(300, loop=self.bot.loop):
+                    await still_active.wait()
+            except asyncio.TimeoutError:
+                guild_id = int(event.player.guild_id)
+                await self.connect_to(guild_id, None)
+
+                ctx = player.fetch('ctx')
+                await ctx.send('Saí do canal devido a inatividade de comandos.', author=None)
 
         if isinstance(event, lavalink.events.TrackStartEvent):
             player = event.player
             track = player.current
 
             ctx = player.fetch('ctx')
+            player.fetch('still_active').set()
+
             requester = ctx.guild.get_member(track.requester).mention or '**[usuário desconhecido]**'
 
             try:
@@ -103,6 +119,7 @@ class Music(commands.Cog):
                 raise CannotConnect()
 
             player.store('ctx', ctx)
+            player.store('still_active', asyncio.Event(loop=ctx.bot.loop))
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
             if int(player.channel_id) != ctx.author.voice.channel.id:
@@ -185,7 +202,7 @@ class Music(commands.Cog):
     async def skip(self, ctx: commands.Context):
         """Skips the current music."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
-        
+
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
         await player.skip()
 
