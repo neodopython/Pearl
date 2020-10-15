@@ -77,7 +77,7 @@ class Music(commands.Cog):
                 f'Solicitante: {requester}'
             ]
 
-            await ctx.send('\n'.join(messages), title='Tocando agora')
+            await ctx.send('\n'.join(messages), title='Tocando agora', author=None)
 
     async def connect_to(self, guild_id: int, channel_id: typing.Optional[str]) -> None:
         ws = self.bot._connection._get_websocket(guild_id)
