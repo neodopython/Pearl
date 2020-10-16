@@ -55,6 +55,11 @@ class Music(commands.Cog):
     def cog_unload(self):
         self.bot.lavalink._event_hooks.clear()
 
+    def has_dj_permissions(self, player: lavalink.DefaultPlayer, ctx: commands.Context) -> bool:
+        is_dj = ctx.author == player.fetch('dj')
+        is_admin = ctx.author.guild_permissions.manage_channels
+        return True if is_dj or is_admin else False
+
     async def track_hook(self, event: lavalink.Event) -> None:
         if isinstance(event, lavalink.events.QueueEndEvent):
             player = event.player
@@ -119,6 +124,7 @@ class Music(commands.Cog):
                 raise CannotConnect()
 
             player.store('ctx', ctx)
+            player.store('dj', ctx.author.id)
             player.store('still_active', asyncio.Event(loop=ctx.bot.loop))
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
@@ -184,6 +190,9 @@ class Music(commands.Cog):
         if player.paused:
             raise AlreadyPaused()
 
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
+
         await player.set_pause(True)
         await ctx.send(f'Música foi pausada por {ctx.author.mention}.')
 
@@ -194,6 +203,9 @@ class Music(commands.Cog):
         
         if not player.paused:
             raise AlreadyResumed()
+
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
 
         await player.set_pause(False)
         await ctx.send(f'Música foi resumida por {ctx.author.mention}.')
@@ -211,6 +223,9 @@ class Music(commands.Cog):
     async def seek(self, ctx: commands.Context, time: int):
         if time < 0:
             raise InvalidSeekTime()
+
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
 
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         delta = humanize.precisedelta(timedelta(seconds=time or 1), minimum_unit='seconds')
@@ -269,6 +284,9 @@ class Music(commands.Cog):
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             raise WrongChannel()
+
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
 
         player.queue.clear()
         await player.stop()

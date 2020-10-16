@@ -69,3 +69,8 @@ class InvalidSeekTime(MusicException):
 class InvalidVolume(MusicException):
     def __init__(self):
         super().__init__('Invalid volume')
+
+
+class NotDJ(MusicException):
+    def __init__(self):
+        super().__init__('You are not DJ or an administrador')
