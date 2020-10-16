@@ -25,6 +25,8 @@ SOFTWARE.
 import discord
 from discord.ext import commands
 
+from utils.errors import *
+
 
 class Events(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -39,6 +41,32 @@ class Events(commands.Cog):
     async def on_guild_remove(self, guild: discord.Guild):
         query = 'DELETE FROM settings WHERE guild_id = $1'
         await self.bot.pool.execute(query, guild.id)
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        ignored = ()
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, ignored):
+            return
+
+        errors = {
+            RequesterNotConnected: 'Conecte-se a um canal de voz antes de usar comandos de música.',
+            BotNotConnected: 'Não estou conectada.',
+            CannotConnect: 'Não consigo me conectar por falta de permissões (eu tenho permissão de conectar **e** falar?).',
+            WrongChannel: 'Você precisa estar no mesmo canal que eu.',
+            NothingFound: 'Nenhuma música encontrada.',
+            AlreadyPaused: 'A música já está pausada.',
+            AlreadyResumed: 'A música não está pausada.',
+            InvalidSeekTime: 'Tempo inválido.',
+            InvalidVolume: 'Volume inválido.',
+            NotDJ: 'Você não é o DJ ou você não tem permissões para usar este comando.'
+        }
+
+        if type(error) in errors:
+            return await ctx.send(errors[type(error)])
+
+        raise error
 
 
 def setup(bot: commands.Bot) -> None:
