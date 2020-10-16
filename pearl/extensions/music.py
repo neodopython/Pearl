@@ -55,6 +55,9 @@ class Music(commands.Cog):
     def cog_unload(self):
         self.bot.lavalink._event_hooks.clear()
 
+    def escape_markdown(self, text: str) -> str:
+        return discord.utils.escape_markdown(text)
+
     def has_dj_permissions(self, player: lavalink.DefaultPlayer, ctx: commands.Context) -> bool:
         is_dj = ctx.author == player.fetch('dj')
         is_admin = ctx.author.guild_permissions.manage_channels
@@ -92,7 +95,7 @@ class Music(commands.Cog):
                 duration = '**[ao vivo]**'
 
             messages = [
-                f'Música: [{track.title}]({track.uri})',
+                f'Música: [{self.escape_markdown(track.title)}]({track.uri})',
                 f'Canal: **{track.author}**',
                 f'Duração: **{duration}**',
                 f'Solicitante: {requester}'
@@ -250,7 +253,7 @@ class Music(commands.Cog):
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         current = player.current
 
-        title = discord.utils.escape_markdown(current.title)
+        title = self.escape_markdown(current.title)
         requester = ctx.guild.get_member(current.requester).mention or '**[usuário desconhecido]**'
 
         try:
@@ -302,7 +305,7 @@ class Music(commands.Cog):
 
         titles = []
         for index, track in enumerate(queue, start=1):
-            titles.append(f'`{index}.` **{track.title}** ({track.author})')
+            titles.append(f'`{index}.` **{self.escape_markdown(track.title)}** ({track.author})')
 
         menu = Menu(titles or 'Não há nada na playlist.', per_page=12)
         await menu.start(ctx)
