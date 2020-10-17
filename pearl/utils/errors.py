@@ -22,7 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-class MusicException(Exception):
+from discord.ext.commands import CommandError
+
+
+class MusicException(CommandError):
     """Generic exception for music commands errors."""
 
 
@@ -76,6 +79,6 @@ class NotDJ(MusicException):
         super().__init__('You are not DJ or an administrador')
 
 
-class ResponseError(Exception):
+class ResponseError(CommandError):
     def __init__(self):
         super().__init__('Not OK response')
