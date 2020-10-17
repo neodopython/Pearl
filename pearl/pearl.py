@@ -56,6 +56,7 @@ import importlib
 import discord
 import asyncpg
 import humanize
+import aiohttp
 from discord.ext import commands
 
 import config
@@ -81,6 +82,7 @@ class Pearl(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=get_prefix, intents=discord.Intents.all())
         self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
+        self.session = self.loop.run_until_complete(create_session(loop=self.loop))
 
         self.logger = logging.getLogger()
         self.all_extensions = []
@@ -142,6 +144,12 @@ async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.
         await conn.set_type_codec('jsonb', schema='pg_catalog', encoder=_encode_jsonb, decoder=_decode_jsonb)
 
     return await asyncpg.create_pool(uri, init=_init, loop=loop)
+
+
+# TODO: Add docstring for this function.
+async def create_session(*, loop: asyncio.BaseEventLoop) -> aiohttp.ClientSession:
+    # TODO: Recycle bot's session connector.
+    return aiohttp.ClientSession(loop=loop)
 
 
 @contextlib.contextmanager
