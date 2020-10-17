@@ -74,3 +74,8 @@ class InvalidVolume(MusicException):
 class NotDJ(MusicException):
     def __init__(self):
         super().__init__('You are not DJ or an administrador')
+
+
+class ResponseError(Exception):
+    def __init__(self):
+        super().__init__('Not OK response')
