@@ -321,6 +321,18 @@ class Music(commands.Cog):
         random.shuffle(player.queue)
         await ctx.send('Fila de músicas embaralhada.')
 
+    # TODO: Add docstring for this method.
+    @commands.command(aliases=['lp', 'repeatqueue', 'rq'])
+    async def loopqueue(self, ctx: commands.Context):
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+        is_repeating = player.repeat
+
+        repeat = True if not is_repeating else False
+        word = ('des' if is_repeating else '') + 'ativado'
+
+        player.set_repeat(repeat)
+        await ctx.send(f'Loop da fila {word}.')
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))
