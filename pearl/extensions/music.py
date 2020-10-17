@@ -293,6 +293,8 @@ class Music(commands.Cog):
             raise NotDJ()
 
         player.queue.clear()
+        player.fetch('still_active').set()
+        
         await player.stop()
         await self.connect_to(ctx.guild.id, None)
 
