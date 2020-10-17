@@ -131,6 +131,11 @@ class Pearl(commands.Bot):
 
         await self.invoke(ctx)
 
+    # TODO: Add docstring for this method.
+    async def close(self) -> None:
+        await self.session.close()
+        await super().close()
+
 
 async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.Pool:
     """Creates a PostgreSQL pool."""
