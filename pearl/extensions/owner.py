@@ -68,7 +68,7 @@ class Owner(commands.Cog):
         env = self.get_env(ctx)
         stdout = StringIO()
 
-        code = re.sub(r';\s?', '\n', code.content).split('\n')
+        code = list(filter(lambda x: x != '', re.sub(r';\s?', '\n', code.content).split('\n')))
         
         cannot_starts_with = ('return', 'import', 'from', '  ')
         invalid_startswith = False
