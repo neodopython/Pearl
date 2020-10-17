@@ -25,6 +25,7 @@ SOFTWARE.
 import typing
 import re
 import asyncio
+import random
 from datetime import timedelta
 from async_timeout import timeout
 
@@ -309,6 +310,14 @@ class Music(commands.Cog):
 
         menu = Menu(titles or 'Não há nada na playlist.', per_page=12)
         await menu.start(ctx)
+
+    # TODO: Add docstring for this method.
+    @commands.command()
+    async def shuffle(self, ctx: commands.Context):
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        random.shuffle(player.queue)
+        await ctx.send('Fila de músicas embaralhada.')
 
 
 def setup(bot: commands.Bot) -> None:
