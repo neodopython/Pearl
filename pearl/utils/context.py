@@ -53,5 +53,7 @@ class Context(commands.Context):
     async def send(self, content: str = None, **kwargs) -> discord.Message:
         """This method was overrided to send a rendered cool embed."""
         delete_after = kwargs.pop('delete_after', None)
+        file = kwargs.pop('file', None)
+
         embed = self.get_embed(content=content, **kwargs)
-        return await super().send(embed=embed, delete_after=delete_after)
+        return await super().send(embed=embed, delete_after=delete_after, file=file)

@@ -3,3 +3,4 @@ config.py
 logs/
 *.jar
 *.yml
+assets/
