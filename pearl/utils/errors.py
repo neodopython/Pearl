@@ -79,6 +79,11 @@ class NotDJ(MusicException):
         super().__init__('You are not DJ or an administrador')
 
 
+class CannotRemoveMusic(MusicException):
+    def __init__(self):
+        super().__init__('Cannot remove this song from queue')
+
+
 # TODO: Add docstring for this class.
 class ResponseError(CommandError):
     def __init__(self):

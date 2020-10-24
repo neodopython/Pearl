@@ -333,6 +333,22 @@ class Music(commands.Cog):
         player.set_repeat(repeat)
         await ctx.send(f'Loop da fila {word}.')
 
+    # TODO: Add docstring for this method.
+    @commands.command()
+    async def remove(self, ctx: commands.Context, index: int):
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if index > len(player.queue) or index <= 0:
+            raise CannotRemoveMusic()
+
+        index -= 1
+
+        track = player.queue[index]
+        title = self.escape_markdown(track.title)
+
+        del player.queue[index]
+        await ctx.send(f'[{title}]({track.uri}) foi removido da fila.')
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))
