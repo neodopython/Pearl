@@ -322,7 +322,7 @@ class Music(commands.Cog):
         await ctx.send('Fila de músicas embaralhada.')
 
     # TODO: Add docstring for this method.
-    @commands.command(aliases=['lp', 'repeatqueue', 'rq'])
+    @commands.command(aliases=['lq', 'repeatqueue', 'rq'])
     async def loopqueue(self, ctx: commands.Context):
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         is_repeating = player.repeat
