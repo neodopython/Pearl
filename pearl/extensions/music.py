@@ -245,7 +245,7 @@ class Music(commands.Cog):
 
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
-        await player.set_volume(volume * 10)
+        await player.set_volume(volume)
         await ctx.send(f'Volume alterado para {volume}%.')
 
     @commands.command(aliases=['np'])
