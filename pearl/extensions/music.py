@@ -321,6 +321,8 @@ class Music(commands.Cog):
         random.shuffle(player.queue)
         await ctx.send('Fila de músicas embaralhada.')
 
+    # TODO: Add loop command.
+
     # TODO: Add docstring for this method.
     @commands.command(aliases=['lq', 'repeatqueue', 'rq'])
     async def loopqueue(self, ctx: commands.Context):
