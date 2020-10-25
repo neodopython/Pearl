@@ -358,7 +358,7 @@ class Music(commands.Cog):
             return NothingInQueue()
 
         player.queue = []
-        await ctx.send('A fila foi limpa.')
+        await ctx.send('A fila de música foi limpa.')
 
 
 def setup(bot: commands.Bot) -> None:
