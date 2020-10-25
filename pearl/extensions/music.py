@@ -349,6 +349,17 @@ class Music(commands.Cog):
         del player.queue[index]
         await ctx.send(f'[{title}]({track.uri}) foi removido da fila.')
 
+    # TODO: Add docstring for this method.
+    @commands.command()
+    async def clear(self, ctx: commands.Context):
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if not len(player.queue):
+            return NothingInQueue()
+
+        player.queue = []
+        await ctx.send('A fila foi limpa.')
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Music(bot))

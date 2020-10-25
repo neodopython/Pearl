@@ -84,6 +84,11 @@ class CannotRemoveMusic(MusicException):
         super().__init__('Cannot remove this song from queue')
 
 
+class NothingInQueue(MusicException):
+    def __init__(self):
+        super().__init__('Nothing in queue')
+
+
 # TODO: Add docstring for this class.
 class ResponseError(CommandError):
     def __init__(self):
