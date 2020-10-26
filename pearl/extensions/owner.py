@@ -29,6 +29,7 @@ import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 
+import discord
 from discord.ext import commands
 
 from utils.codeblocks import codeblock_converter
