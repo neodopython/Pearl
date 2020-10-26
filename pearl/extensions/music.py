@@ -254,10 +254,11 @@ class Music(commands.Cog):
         if time < 0:
             raise InvalidSeekTime()
 
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+
         if not self.has_dj_permissions(player, ctx):
             raise NotDJ()
 
-        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         delta = humanize.precisedelta(timedelta(seconds=time or 1), minimum_unit='seconds')
 
         await player.seek(time * 1000)
