@@ -104,6 +104,11 @@ class Music(commands.Cog):
 
             await ctx.send('\n'.join(messages), title='Tocando agora', author=None)
 
+        if isinstance(event, lavalink.events.TrackEndEvent):
+            player = event.player
+            player.store('skip_votes', 0)
+            player.store('already_voted', [])
+
     async def connect_to(self, guild_id: int, channel_id: typing.Optional[str]) -> None:
         ws = self.bot._connection._get_websocket(guild_id)
         await ws.voice_state(str(guild_id), channel_id)
@@ -130,6 +135,8 @@ class Music(commands.Cog):
             player.store('ctx', ctx)
             player.store('dj', ctx.author.id)
             player.store('still_active', asyncio.Event(loop=ctx.bot.loop))
+            player.store('skip_votes', 0)
+            player.store('already_voted', [])
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
             if int(player.channel_id) != ctx.author.voice.channel.id:
@@ -218,6 +225,25 @@ class Music(commands.Cog):
     async def skip(self, ctx: commands.Context):
         """Skips the current music."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+        channel = ctx.me.voice.channel
+
+        if not self.has_dj_permissions(player, ctx):
+            already_voted = player.fetch('already_voted')
+            if ctx.author.id in already_voted:
+                raise AlreadyVoted()
+
+            total_members = len(list(filter(lambda m: m.bot, channel.members)))
+            needed_votes = round((total_members * 7) / 10)
+
+            total_votes = player.fetch('skip_votes') + 1
+
+            if total_votes < needed_votes:
+                already_voted.append(ctx.author.id)
+                player.store('skip_votes', total_votes)
+                player.store('already_voted', already_voted)
+
+                await ctx.send(f'Votado para pular esta música, `{total_votes}/{needed_votes}` votos necessários.')
+                return
 
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
         await player.skip()

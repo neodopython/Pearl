@@ -89,6 +89,11 @@ class NothingInQueue(MusicException):
         super().__init__('Nothing in queue')
 
 
+class AlreadyVoted(MusicException):
+    def __init__(self):
+        super().__init__('Already voted to skip this music')
+
+
 # TODO: Add docstring for this class.
 class ResponseError(CommandError):
     def __init__(self):

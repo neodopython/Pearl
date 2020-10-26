@@ -60,7 +60,8 @@ class Events(commands.Cog):
             AlreadyResumed: 'A música não está pausada.',
             InvalidSeekTime: 'Tempo inválido.',
             InvalidVolume: 'Volume inválido.',
-            NotDJ: 'Você não é o DJ ou você não tem permissões para usar este comando.'
+            NotDJ: 'Você não é o DJ ou você não tem permissões para usar este comando.',
+            AlreadyVoted: 'Você já votou para pular esta música.'
         }
 
         if type(error) in errors:
