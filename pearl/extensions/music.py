@@ -173,7 +173,7 @@ class Music(commands.Cog):
             track = results['tracks'][0]
             total_length = track['info']['length']
 
-            name = discord.utils.escape_markdown(track['info']['title'])
+            name = self.escape_markdown(track['info']['title'])
             url = track['info']['uri']
             author = track['info']['author']
 
