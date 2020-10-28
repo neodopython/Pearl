@@ -94,6 +94,16 @@ class AlreadyVoted(MusicException):
         super().__init__('Already voted to skip this music')
 
 
+class InvalidValueIndex(MusicException):
+    def __init__(self):
+        super().__init__('Invalid value index')
+
+
+class InvalidMusicIndex(MusicException):
+    def __init__(self):
+        super().__init__('Invalid music index')
+
+
 # TODO: Add docstring for this class.
 class ResponseError(CommandError):
     def __init__(self):

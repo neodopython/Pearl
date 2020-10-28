@@ -118,7 +118,7 @@ class Music(commands.Cog):
 
     async def ensure_voice(self, ctx: commands.Context) -> None:
         player = ctx.bot.lavalink.player_manager.create(ctx.guild.id, endpoint=str(ctx.guild.region))
-        should_connect = ctx.command.name in ('play',)
+        should_connect = ctx.command.name in ('play', 'search')
 
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise RequesterNotConnected()
@@ -189,6 +189,69 @@ class Music(commands.Cog):
             duration = '**[ao vivo]**'
 
         await ctx.send(f'{info}\nDuração: **{duration}**', title=title)
+
+        if not player.is_playing:
+            await player.play()
+
+    # TODO: Add docstring for this method.
+    @commands.command()
+    async def search(self, ctx: commands.Context, *, query: str):
+        player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+        query = query.strip('<>')
+
+        if not url_regex.match(query):
+            query = f'ytsearch:{query}'
+
+        results = await player.node.get_tracks(query)
+
+        if not results or not results['tracks']:
+            raise NothingFound()
+
+        tracks = results['tracks'][:10]
+
+        def enumerate_track(value) -> str:
+            i, track = value
+
+            title = track['info']['title']
+            author = track['info']['author']
+            return f'`{i}.` **{title}** ({author})'
+        
+        all_tracks = map(enumerate_track, enumerate(tracks, start=1))
+        tracks_message = await ctx.send('\n'.join(all_tracks))
+
+        def check(message: discord.Message) -> bool:
+            return message.author == ctx.author
+
+        try:
+            message = await ctx.bot.wait_for('message', check=check, timeout=60)
+        except asyncio.TimeoutError:
+            await ctx.send('Operação cancelada devido a inatividade.')
+            return
+
+        content = message.content
+        if content == 'cancel':
+            return await ctx.send('Cancelado.')
+
+        try:
+            track = tracks[int(content) - 1]
+        except ValueError:
+            raise InvalidValueIndex()
+        except IndexError:
+            raise InvalidMusicIndex()
+
+        name = self.escape_markdown(track['info']['title'])
+        url = track['info']['uri']
+        author = track['info']['author']
+
+        info = f'Música: [{name}]({url})\nCanal: **{author}**'
+
+        try:
+            duration = humanize.precisedelta(timedelta(milliseconds=track['info']['length']))
+        except OverflowError:
+            duration = '**[ao vivo]**'
+
+        player.add(requester=ctx.author.id, track=track)
+        await ctx.send(f'{info}\nDuração: **{duration}**', title='Música adicionada')
 
         if not player.is_playing:
             await player.play()
