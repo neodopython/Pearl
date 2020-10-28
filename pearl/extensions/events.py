@@ -61,7 +61,9 @@ class Events(commands.Cog):
             InvalidSeekTime: 'Tempo inválido.',
             InvalidVolume: 'Volume inválido.',
             NotDJ: 'Você não é o DJ ou você não tem permissões para usar este comando.',
-            AlreadyVoted: 'Você já votou para pular esta música.'
+            AlreadyVoted: 'Você já votou para pular esta música.',
+            InvalidValueIndex: 'Você digitou um valor inválido.',
+            InvalidMusicIndex: 'Esta lista não possui este índice.'
         }
 
         if type(error) in errors:
