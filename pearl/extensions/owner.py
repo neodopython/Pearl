@@ -61,11 +61,12 @@ class Owner(commands.Cog):
 
     @commands.group(aliases=['wd'], invoke_without_command=True, ignore_extra=True)
     async def watchdog(self, ctx: commands.Context):
+        """Comandos para desenvolvedores apenas."""
         pass
 
     @watchdog.command(name='python', aliases=['py'])
     async def watchdog_python(self, ctx: commands.Context, *, code: codeblock_converter):
-        """Performs code evaluation in Python."""
+        """Performa uma evaluação de código em Python."""
         env = self.get_env(ctx)
         stdout = StringIO()
 

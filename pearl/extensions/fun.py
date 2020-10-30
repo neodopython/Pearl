@@ -33,6 +33,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['randomcat'])
     async def cat(self, ctx: commands.Context):
+        """Envia um gif de um gatinho fofo aleatório."""
         async with ctx.bot.session.get('http://aws.random.cat/meow') as response:
             if response.status != 200:
                 raise ResponseError()
@@ -42,6 +43,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['randomdog'])
     async def dog(self, ctx: commands.Context):
+        """Envia um gif de um cachorrinho fofo aleatório."""
         async with ctx.bot.session.get('https://random.dog/woof.json') as response:
             if response.status != 200:
                 raise ResponseError()

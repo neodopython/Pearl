@@ -32,7 +32,7 @@ class Settings(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def prefix(self, ctx: commands.Context):
-        """Shows the guild's custom prefix."""
+        """Mostra o prefixo do servidor."""
         query = 'SELECT prefix FROM settings WHERE guild_id = $1'
         fetch = await ctx.pool.fetchrow(query, ctx.guild.id)
 
@@ -42,7 +42,7 @@ class Settings(commands.Cog):
     @prefix.command(name='set')
     @commands.has_permissions(manage_guild=True)
     async def prefix_set(self, ctx: commands.Context, prefix: str):
-        """Changes the guild's custom prefix."""
+        """Muda o prefixo do servidor."""
         if len(prefix) > self.limit:
             return await ctx.send(f'Prefixo muito grande, o limite é `{self.limit}` caracteres.')
 

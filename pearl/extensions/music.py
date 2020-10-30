@@ -144,7 +144,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['p'])
     async def play(self, ctx: commands.Context, *, query: str):
-        """Plays a music with given query."""
+        """Toca uma música com o título dado."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
 
@@ -193,9 +193,9 @@ class Music(commands.Cog):
         if not player.is_playing:
             await player.play()
 
-    # TODO: Add docstring for this method.
     @commands.command()
     async def search(self, ctx: commands.Context, *, query: str):
+        """Procura por uma música e enfim adiciona ela através do índice dado."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
 
@@ -258,7 +258,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def pause(self, ctx: commands.Context):
-        """Pauses the current player."""
+        """Pausa a música caso esteja tocando."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
         if player.paused:
@@ -272,7 +272,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def resume(self, ctx: commands.Context):
-        """Resumes the current player."""
+        """Resume a música caso esteja pausada."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         
         if not player.paused:
@@ -286,7 +286,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['s'])
     async def skip(self, ctx: commands.Context):
-        """Skips the current music."""
+        """Pula a música atual."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         channel = ctx.me.voice.channel
 
@@ -311,9 +311,9 @@ class Music(commands.Cog):
         await ctx.send(f'Música pulada por {ctx.author.mention}.')
         await player.skip()
 
-    # TODO: Add docstring for this method.
     @commands.command()
     async def seek(self, ctx: commands.Context, time: int):
+        """Pula a música para um determinado tempo."""
         if time < 0:
             raise InvalidSeekTime()
 
@@ -340,7 +340,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['np'])
     async def nowplaying(self, ctx: commands.Context):
-        """Shows what music is currently playing."""
+        """Mostra qual música está atualmente tocando."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         current = player.current
 
@@ -370,7 +370,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['dc', 'stop'])
     async def disconnect(self, ctx: commands.Context):
-        """Stop player and disconnects bot from channel."""
+        """Para o player de música e me disconecta do canal."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.is_connected:
@@ -392,7 +392,7 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['q'])
     async def queue(self, ctx: commands.Context):
-        """Show the current queue."""
+        """Mostra a fila de música."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         queue = player.queue
 
@@ -403,9 +403,9 @@ class Music(commands.Cog):
         menu = Menu(titles or 'Não há nada na playlist.', per_page=12)
         await menu.start(ctx)
 
-    # TODO: Add docstring for this method.
     @commands.command()
     async def shuffle(self, ctx: commands.Context):
+        """Embaralha a fila de música."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         random.shuffle(player.queue)
@@ -413,9 +413,9 @@ class Music(commands.Cog):
 
     # TODO: Add loop command.
 
-    # TODO: Add docstring for this method.
     @commands.command(aliases=['lq', 'repeatqueue', 'rq'])
     async def loopqueue(self, ctx: commands.Context):
+        """A fila de música se repetirá caso ativado.""" 
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         is_repeating = player.repeat
 
@@ -425,9 +425,9 @@ class Music(commands.Cog):
         player.set_repeat(repeat)
         await ctx.send(f'Loop da fila {word}.')
 
-    # TODO: Add docstring for this method.
     @commands.command()
     async def remove(self, ctx: commands.Context, index: int):
+        """Remove uma música da fila pelo índice."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if index > len(player.queue) or index <= 0:
@@ -441,9 +441,9 @@ class Music(commands.Cog):
         del player.queue[index]
         await ctx.send(f'[{title}]({track.uri}) foi removido da fila.')
 
-    # TODO: Add docstring for this method.
     @commands.command()
     async def clear(self, ctx: commands.Context):
+        """Limpa a fila de música."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not len(player.queue):
