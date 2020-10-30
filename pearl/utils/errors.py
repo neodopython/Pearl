@@ -104,6 +104,11 @@ class InvalidMusicIndex(MusicException):
         super().__init__('Invalid music index')
 
 
+class BotNotPlaying(MusicException):
+    def __init__(self):
+        super().__init__('Nothing playing')
+
+
 # TODO: Add docstring for this class.
 class ResponseError(CommandError):
     def __init__(self):

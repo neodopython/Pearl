@@ -344,6 +344,9 @@ class Music(commands.Cog):
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
         current = player.current
 
+        if not current:
+            raise BotNotPlaying()
+
         title = self.escape_markdown(current.title)
         requester = ctx.guild.get_member(current.requester).mention or '**[usuário desconhecido]**'
 
