@@ -412,6 +412,7 @@ class Music(commands.Cog):
         await ctx.send('Fila de músicas embaralhada.')
 
     # TODO: Add loop command.
+    # TODO: Add move command.
 
     @commands.command(aliases=['lq', 'repeatqueue', 'rq'])
     async def loopqueue(self, ctx: commands.Context):
