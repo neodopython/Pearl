@@ -434,6 +434,9 @@ class Music(commands.Cog):
         """Remove uma música da fila pelo índice."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
 
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
+
         if index > len(player.queue) or index <= 0:
             raise CannotRemoveMusic()
 
@@ -449,6 +452,9 @@ class Music(commands.Cog):
     async def clear(self, ctx: commands.Context):
         """Limpa a fila de música."""
         player = ctx.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if not self.has_dj_permissions(player, ctx):
+            raise NotDJ()
 
         if not len(player.queue):
             return NothingInQueue()
