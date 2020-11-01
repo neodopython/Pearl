@@ -40,6 +40,11 @@ class Context(commands.Context):
         """Returns a invisible embed color."""
         return 0x2f3136
 
+    @property
+    def constants(self):
+        """Returns all constants module."""
+        return self.bot.constants
+
     def get_embed(self, content: str = None, **kwargs) -> Embed:
         """Returns a ready-to-use embed with given content."""
         author = kwargs.pop('author', {
