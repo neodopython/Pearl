@@ -22,7 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from datetime import timedelta
+
 import discord
+import humanize
 from discord.ext import commands
 
 from utils.errors import *
@@ -31,6 +34,11 @@ from utils.errors import *
 class Events(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    def get_cooldown_message(self, ctx: commands.Context, error: commands.CommandOnCooldown) -> str:
+        delta = timedelta(seconds=int(error.retry_after))
+        precise_delta = humanize.precisedelta(delta)        
+        return f'Espere **{precise_delta}** para usar este comando novamente.'
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
@@ -63,11 +71,16 @@ class Events(commands.Cog):
             NotDJ: 'Você não é o DJ ou você não tem permissões para usar este comando.',
             AlreadyVoted: 'Você já votou para pular esta música.',
             InvalidValueIndex: 'Você digitou um valor inválido.',
-            InvalidMusicIndex: 'Esta lista não possui este índice.'
+            InvalidMusicIndex: 'Esta lista não possui este índice.',
+            commands.CommandOnCooldown: self.get_cooldown_message
         }
 
         if type(error) in errors:
-            return await ctx.send(errors[type(error)])
+            value = errors[type(error)]
+            if callable(value):
+                value = value(ctx, error)
+            
+            return await ctx.send(value)
 
         raise error
 
