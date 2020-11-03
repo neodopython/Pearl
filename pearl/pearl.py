@@ -52,6 +52,7 @@ import re
 import asyncio
 import typing
 import importlib
+from datetime import datetime
 
 import discord
 import asyncpg
@@ -109,6 +110,9 @@ class Pearl(commands.Bot):
 
     async def on_ready(self) -> None:
         """Loads all extensions when bot is ready."""
+        if not hasattr(self, 'uptime'):
+            self.uptime = datetime.utcnow()
+
         for extension in self.all_extensions:
             try:
                 self.load_extension(extension)
