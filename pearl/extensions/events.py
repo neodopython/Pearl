@@ -72,7 +72,8 @@ class Events(commands.Cog):
             AlreadyVoted: 'Você já votou para pular esta música.',
             InvalidValueIndex: 'Você digitou um valor inválido.',
             InvalidMusicIndex: 'Esta lista não possui este índice.',
-            commands.CommandOnCooldown: self.get_cooldown_message
+            commands.CommandOnCooldown: self.get_cooldown_message,
+            BotNotPlaying: 'Eu não estou tocando nenhuma música.'
         }
 
         if type(error) in errors:
