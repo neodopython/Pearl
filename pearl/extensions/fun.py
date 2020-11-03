@@ -31,7 +31,7 @@ from discord.ext import commands
 from utils.errors import ResponseError
 
 
-ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
+_ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
 
 
 class Fun(commands.Cog):
@@ -62,7 +62,7 @@ class Fun(commands.Cog):
     async def cowboy(self, ctx: commands.Context, target: typing.Union[discord.Emoji, str]):
         """Olá, parceiro! Eu sou um cowboy feito do que você quiser."""
         if isinstance(target, str):
-            if target not in ALL_EMOJIS:
+            if target not in _ALL_EMOJIS:
                 raise commands.BadArgument()
 
         cowboy = '⠀ ⠀ ⠀  🤠\n　   {0}{0}{0}\n    {0}   {0}　{0}\n   👇   {0}{0} 👇\n  　  {0}　{0}\n　   {0}　 {0}\n　   👢     👢'
