@@ -73,7 +73,8 @@ class Events(commands.Cog):
             InvalidValueIndex: 'Você digitou um valor inválido.',
             InvalidMusicIndex: 'Esta lista não possui este índice.',
             commands.CommandOnCooldown: self.get_cooldown_message,
-            BotNotPlaying: 'Eu não estou tocando nenhuma música.'
+            BotNotPlaying: 'Eu não estou tocando nenhuma música.',
+            commands.BadArgument: 'Argumento inválido.'
         }
 
         if type(error) in errors:

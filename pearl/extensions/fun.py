@@ -22,9 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import typing
+
+import discord
+import emoji
 from discord.ext import commands
 
 from utils.errors import ResponseError
+
+
+ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
 
 
 class Fun(commands.Cog):
@@ -50,6 +57,16 @@ class Fun(commands.Cog):
 
             json = await response.json()
             await ctx.send(image=json['url'])
+
+    @commands.command(aliases=['sheriff'])
+    async def cowboy(self, ctx: commands.Context, target: typing.Union[discord.Emoji, str]):
+        """Olá, parceiro! Eu sou um cowboy feito do que você quiser."""
+        if isinstance(target, str):
+            if target not in ALL_EMOJIS:
+                raise commands.BadArgument()
+
+        cowboy = '⠀ ⠀ ⠀  🤠\n　   {0}{0}{0}\n    {0}   {0}　{0}\n   👇   {0}{0} 👇\n  　  {0}　{0}\n　   {0}　 {0}\n　   👢     👢'
+        await ctx.channel.send(cowboy.format(target))
 
 
 def setup(bot: commands.Bot) -> None:
