@@ -137,8 +137,8 @@ class Pearl(commands.Bot):
 
         await self.invoke(ctx)
 
-    # TODO: Add docstring for this method.
     async def close(self) -> None:
+        """Closes the aiohttp session and then closes bot."""
         await self.session.close()
         await super().close()
 
