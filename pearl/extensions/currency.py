@@ -52,7 +52,7 @@ class Currency(commands.Cog):
         await ctx.send(f'{word} possui {pearkies} {ctx.constants.pearkies_emoji}.')
 
     @commands.command()
-    @commands.cooldown(1, 3600, commands.BucketType.member)
+    @commands.cooldown(1, 86400, commands.BucketType.member)
     async def daily(self, ctx: commands.Context, *, member: discord.Member = None):
         member = member or ctx.author
         await self.insert_into(ctx, member=member)
