@@ -85,7 +85,7 @@ class Pearl(commands.Bot):
         self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
         self.session = self.loop.run_until_complete(create_session(loop=self.loop))
 
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger('pearl')
         self.all_extensions = []
 
         for root, _, items in os.walk('extensions'):
