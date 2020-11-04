@@ -82,8 +82,10 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tupl
 class Pearl(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=get_prefix, intents=discord.Intents.all())
-        self.pool = self.loop.run_until_complete(create_pool(config.postgres, loop=self.loop))
-        self.session = self.loop.run_until_complete(create_session(loop=self.loop))
+        run = self.loop.run_until_complete
+
+        self.pool = run(create_pool(config.postgres, loop=self.loop))
+        self.session = run(create_session(self.http.connector, loop=self.loop))
 
         self.logger = logging.getLogger('pearl')
         self.all_extensions = []
@@ -155,9 +157,8 @@ async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.
     return await asyncpg.create_pool(uri, init=_init, loop=loop)
 
 
-# TODO: Add docstring for this function.
-async def create_session(*, loop: asyncio.BaseEventLoop) -> aiohttp.ClientSession:
-    # TODO: Recycle bot's session connector.
+async def create_session(connector: aiohttp.BaseConnector, *, loop: asyncio.BaseEventLoop) -> aiohttp.ClientSession:
+    """Creates an aiohttp session to make web requests."""
     return aiohttp.ClientSession(loop=loop)
 
 
