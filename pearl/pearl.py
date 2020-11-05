@@ -58,6 +58,7 @@ import discord
 import asyncpg
 import humanize
 import aiohttp
+import asyncdagpi
 from discord.ext import commands
 
 import config
@@ -86,6 +87,7 @@ class Pearl(commands.Bot):
 
         self.pool = run(create_pool(config.postgres, loop=self.loop))
         self.session = run(create_session(self.http.connector, loop=self.loop))
+        self.dagpi = asyncdagpi.Client(config.dagpi, loop=self.loop, session=self.session)
 
         self.logger = logging.getLogger('pearl')
         self.all_extensions = []

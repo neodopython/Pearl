@@ -50,6 +50,11 @@ class Context(commands.Context):
         """Returns asyncio's loop."""
         return self.bot.loop
 
+    @property
+    def dagpi(self):
+        """Returns Dagpi's client."""
+        return self.bot.dagpi
+
     def get_embed(self, content: str = None, **kwargs) -> Embed:
         """Returns a ready-to-use embed with given content."""
         author = kwargs.pop('author', {
