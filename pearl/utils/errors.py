@@ -113,3 +113,23 @@ class BotNotPlaying(MusicException):
 class ResponseError(CommandError):
     def __init__(self):
         super().__init__('Not OK response')
+
+
+# TODO: Add docstring for this class.
+class FunException(CommandError):
+    pass
+
+
+class MemberIsAuthor(FunException):
+    def __init__(self):
+        super().__init__('Member is author')
+
+
+class MemberIsBot(FunException):
+    def __init__(self):
+        super().__init__('Member is a bot')
+
+
+class ListHasDuplicates(FunException):
+    def __init__(self):
+        super().__init__('Members list has duplicates')

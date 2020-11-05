@@ -45,6 +45,11 @@ class Context(commands.Context):
         """Returns all constants module."""
         return self.bot.constants
 
+    @property
+    def loop(self):
+        """Returns asyncio's loop."""
+        return self.bot.loop
+
     def get_embed(self, content: str = None, **kwargs) -> Embed:
         """Returns a ready-to-use embed with given content."""
         author = kwargs.pop('author', {

@@ -23,3 +23,4 @@ SOFTWARE.
 '''
 
 pearkies_emoji = '<:pearkies:758456467324928011>'
+cuteheart_emoji = '<:cuteheart:773701388839419917>'
