@@ -27,8 +27,10 @@ import typing
 import discord
 import emoji
 from discord.ext import commands
+from pyfiglet import Figlet, FigletFont
 
 from utils.errors import ResponseError
+from utils.menus import Menu
 
 
 _ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
@@ -67,6 +69,21 @@ class Fun(commands.Cog):
 
         cowboy = '⠀ ⠀ ⠀  🤠\n　   {0}{0}{0}\n    {0}   {0}　{0}\n   👇   {0}{0} 👇\n  　  {0}　{0}\n　   {0}　 {0}\n　   👢     👢'
         await ctx.channel.send(cowboy.format(target))
+
+    @commands.group(name='ascii', invoke_without_command=True)
+    async def ascii_(self, ctx: commands.Context, font: str, *, text: str):
+        figlet = Figlet(font=font)
+        rendered_text = figlet.renderText(text)
+
+        await ctx.send(f'```\n{rendered_text}\n```')
+
+    @ascii_.command(name='fonts')
+    async def ascii_fonts(self, ctx: commands.Context):
+        all_fonts = FigletFont.getFonts()
+        fonts = [f'`{font}`' for font in all_fonts]
+
+        menu = Menu(', '.join(fonts))
+        await menu.start(ctx)
 
 
 def setup(bot: commands.Bot) -> None:

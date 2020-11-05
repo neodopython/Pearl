@@ -27,6 +27,7 @@ from datetime import timedelta
 import discord
 import humanize
 from discord.ext import commands
+from pyfiglet import FontNotFound, FigletFont
 
 from utils.errors import *
 
@@ -39,6 +40,12 @@ class Events(commands.Cog):
         delta = timedelta(seconds=int(error.retry_after))
         precise_delta = humanize.precisedelta(delta)        
         return f'Espere **{precise_delta}** para usar este comando novamente.'
+
+    def show_valid_fonts(self, ctx: commands.Context, error: commands.CommandError) -> str:
+        valid_fonts = FigletFont.getFonts()
+        fonts = ', '.join([f'`{font}`' for font in valid_fonts])
+
+        return f'Esta não é uma fonte válida. Digite `{ctx.prefix}ascii fonts` para saber as fontes disponíveis.'
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
@@ -74,7 +81,8 @@ class Events(commands.Cog):
             InvalidMusicIndex: 'Esta lista não possui este índice.',
             commands.CommandOnCooldown: self.get_cooldown_message,
             BotNotPlaying: 'Eu não estou tocando nenhuma música.',
-            commands.BadArgument: 'Argumento inválido.'
+            commands.BadArgument: 'Argumento inválido.',
+            FontNotFound: self.show_valid_fonts
         }
 
         if type(error) in errors:
