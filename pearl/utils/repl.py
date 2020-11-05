@@ -52,6 +52,7 @@ import traceback
 from discord.ext import commands
 
 from .menus import Menu
+from .constants import checkmark_emoji
 
 async def send_traceback(ctx: commands.Context, verbosity: int, *exception_info):
     type_, value, trace = exception_info
@@ -77,7 +78,7 @@ class ExceptionReactor:
 
     async def __aexit__(self, type_, value, traceback):
         if not value:
-            return await self.ctx.message.add_reaction('checkmark:762675626582736927')
+            return await self.ctx.message.add_reaction(checkmark_emoji)
 
         self.raised = True
 
