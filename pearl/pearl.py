@@ -76,7 +76,7 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tupl
         # re-fetch data
         fetch = await bot.pool.fetchrow(query, message.guild.id)
     
-    return (fetch['prefix'], 'pearl ')
+    return (fetch['prefix'], 'pearl ', 'hey pearl pls ')
 
 
 class Pearl(commands.Bot):
