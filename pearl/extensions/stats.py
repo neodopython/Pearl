@@ -34,7 +34,9 @@ class Stats(commands.Cog):
 
     @commands.command()
     async def uptime(self, ctx: commands.Context):
-        delta = humanize.precisedelta(datetime.utcnow() - ctx.bot.uptime, format='%0.0f')
+        uptime = datetime.utcnow() - ctx.bot.uptime
+        delta = humanize.precisedelta(uptime, format='%0.0f')
+
         await ctx.send(f'Estou online há **{delta}**.')
 
 
