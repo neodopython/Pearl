@@ -22,11 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import typing
+
 import asyncpg
 import discord
 from discord.ext import commands
 
 from .embed import Embed
+from .menus import Confirm
 
 
 class Context(commands.Context):
@@ -72,3 +75,7 @@ class Context(commands.Context):
 
         embed = self.get_embed(content=content, **kwargs)
         return await super().send(embed=embed, delete_after=delete_after, file=file)
+
+    async def prompt(self, content: str) -> typing.Optional[bool]:
+        confirm = Confirm(content)
+        return await confirm.prompt(self)
