@@ -42,9 +42,6 @@ class Events(commands.Cog):
         return f'Espere **{precise_delta}** para usar este comando novamente.'
 
     def show_valid_fonts(self, ctx: commands.Context, error: commands.CommandError) -> str:
-        valid_fonts = FigletFont.getFonts()
-        fonts = ', '.join([f'`{font}`' for font in valid_fonts])
-
         return f'Esta não é uma fonte válida. Digite `{ctx.prefix}ascii fonts` para saber as fontes disponíveis.'
 
     @commands.Cog.listener()
