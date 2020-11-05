@@ -50,10 +50,10 @@ import logging
 import os
 import re
 import asyncio
-import typing
 import importlib
 import json
 from datetime import datetime
+from typing import Tuple
 
 import discord
 import asyncpg
@@ -66,7 +66,7 @@ import config
 from utils.context import Context
 
 
-async def get_prefix(bot: commands.Bot, message: discord.Message) -> typing.Tuple[str]:
+async def get_prefix(bot: commands.Bot, message: discord.Message) -> Tuple[str]:
     """Returns a tuple with guild's custom prefix and global prefix."""
     query = 'SELECT prefix FROM settings WHERE guild_id = $1'
     fetch = await bot.pool.fetchrow(query, message.guild.id)

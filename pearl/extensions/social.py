@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import typing
+from typing import List
 
 import nekos
 import discord
@@ -36,7 +36,7 @@ class Social(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def valid_mentions(self, ctx: commands.Context, members: typing.List[discord.Member]):
+    def valid_mentions(self, ctx: commands.Context, members: List[discord.Member]):
         for member in members:
             if member == ctx.author:
                 raise MemberIsAuthor()

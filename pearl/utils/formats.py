@@ -45,10 +45,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 '''
 
-import typing
+from typing import Iterable
 
 
-def human_join(sequence: typing.Iterable, delimiter: str = ', ', final: str = 'ou') -> str:
+def human_join(sequence: Iterable, delimiter: str = ', ', final: str = 'ou') -> str:
     size = len(sequence)
     if size == 0:
         return ''

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import typing
+from typing import Union
 
 import discord
 import emoji
@@ -62,7 +62,7 @@ class Fun(commands.Cog):
             await ctx.send(image=json['url'])
 
     @commands.command(aliases=['sheriff'])
-    async def cowboy(self, ctx: commands.Context, target: typing.Union[discord.Emoji, str]):
+    async def cowboy(self, ctx: commands.Context, target: Union[discord.Emoji, str]):
         """Olá, parceiro! Eu sou um cowboy feito do que você quiser."""
         if isinstance(target, str):
             if target not in _ALL_EMOJIS:

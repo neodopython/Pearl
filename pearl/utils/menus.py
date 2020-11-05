@@ -23,7 +23,7 @@ SOFTWARE.
 '''
 
 import textwrap
-import typing
+from typing import Union, List, Optional
 
 import discord
 from discord.ext import commands, menus
@@ -47,7 +47,7 @@ class _BaseMenu(menus.MenuPages):
 
 
 class Menu(_BaseMenu):
-    def __init__(self, data: typing.Union[str, typing.List[str]], **kwargs):
+    def __init__(self, data: Union[str, List[str]], **kwargs):
         if isinstance(data, list):
             Paginator = ListPaginator
         elif isinstance(data, str):
@@ -78,12 +78,12 @@ class TextPaginator(menus.ListPageSource):
 
 
 class ListPaginator(menus.ListPageSource):
-    def __init__(self, data: typing.List[str], **kwargs):
+    def __init__(self, data: List[str], **kwargs):
         per_page = kwargs.pop('per_page', 1)
         self.kwargs = kwargs
         super().__init__(data, per_page=per_page)
 
-    async def format_page(self, menu: menus.Menu, entry: typing.Union[str, typing.List[str]]):
+    async def format_page(self, menu: menus.Menu, entry: Union[str, List[str]]):
         if isinstance(entry, list):
             entry = '\n'.join(entry)
 
@@ -111,7 +111,7 @@ class Confirm(menus.Menu):
     async def send_initial_message(self, ctx: commands.Context, _) -> discord.Message:
         return await ctx.send(self.content)
 
-    async def prompt(self, ctx: commands.Context) -> typing.Optional[bool]:
+    async def prompt(self, ctx: commands.Context) -> Optional[bool]:
         await self.start(ctx, wait=True)
         if self.result is None:
             await ctx.send('Tempo esgotado.')

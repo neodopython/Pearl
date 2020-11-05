@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import typing
 import re
 import asyncio
 import random
 from datetime import timedelta
 from async_timeout import timeout
+from typing import Optional
 
 import lavalink
 import humanize
@@ -109,7 +109,7 @@ class Music(commands.Cog):
             player.store('skip_votes', 0)
             player.store('already_voted', [])
 
-    async def connect_to(self, guild_id: int, channel_id: typing.Optional[str]) -> None:
+    async def connect_to(self, guild_id: int, channel_id: Optional[str]) -> None:
         ws = self.bot._connection._get_websocket(guild_id)
         await ws.voice_state(str(guild_id), channel_id)
 

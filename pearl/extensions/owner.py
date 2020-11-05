@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import typing
 import re
 import textwrap
 import traceback
 from io import StringIO
 from contextlib import redirect_stdout
+from typing import Dict, Any
 
 import discord
 from discord.ext import commands
@@ -42,7 +42,7 @@ class Owner(commands.Cog):
         self.bot = bot
         self._last_result = None
 
-    def get_env(self, ctx: commands.Context) -> typing.Dict[str, typing.Any]:
+    def get_env(self, ctx: commands.Context) -> Dict[str, Any]:
         env = {
             'ctx': ctx,
             'bot': ctx.bot,
