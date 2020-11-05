@@ -28,6 +28,7 @@ import discord
 import emoji
 from discord.ext import commands
 from pyfiglet import Figlet, FigletFont
+from asyncdagpi import ImageFeatures
 
 from utils.errors import ResponseError
 from utils.menus import Menu
@@ -84,6 +85,91 @@ class Fun(commands.Cog):
 
         menu = Menu(', '.join(fonts))
         await menu.start(ctx)
+
+    @commands.command()
+    async def wasted(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.wasted(), url)
+
+        filename = f'wasted.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command(aliases=['pixelate'])
+    async def pixel(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.pixel(), url)
+
+        filename = f'pixel.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command()
+    async def triggered(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.triggered(), url)
+
+        filename = f'triggered.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command()
+    async def invert(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.invert(), url)
+
+        filename = f'invert.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command()
+    async def sobel(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.sobel(), url)
+
+        filename = f'sobel.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command()
+    async def jail(self, ctx: commands.Context, *, member: discord.Member = None):
+        member = member or ctx.author
+        
+        url = str(member.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.jail(), url)
+
+        filename = f'jail.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command(aliases=['whyareyougae'])
+    async def whyareyougay(self, ctx: commands.Context, member: discord.Member, author: discord.Member = None):
+        author = author or ctx.author
+        
+        member_avatar = str(member.avatar_url_as(static_format='png', size=1024))
+        author_avatar = str(author.avatar_url_as(static_format='png', size=1024))
+        image = await ctx.dagpi.image_process(ImageFeatures.why_are_you_gay(), member_avatar, url2=author_avatar)
+
+        filename = f'why_are_you_gay.{image.format}'
+        file = discord.File(fp=image.image, filename=filename)
+
+        await ctx.send(file=file, image=f'attachment://{filename}')
 
 
 def setup(bot: commands.Bot) -> None:
