@@ -26,7 +26,9 @@ import textwrap
 import typing
 
 import discord
-from discord.ext import menus
+from discord.ext import commands, menus
+
+from .constants import checkmark_emoji, wrongmark_emoji
 
 
 class InvalidData(Exception):
@@ -88,3 +90,30 @@ class ListPaginator(menus.ListPageSource):
         embed = menu.ctx.get_embed(entry, **self.kwargs)
         embed.set_footer(text=f'Página {menu.current_page + 1}/{self.get_max_pages()}')
         return embed
+
+
+class Confirm(menus.Menu):
+    def __init__(self, content: str):
+        super().__init__(delete_message_after=True, check_embeds=True)
+        self.result = None
+        self.content = content
+
+    @menus.button(checkmark_emoji)
+    async def on_confirm(self, payload: discord.RawReactionActionEvent):
+        self.result = True
+        self.stop()
+
+    @menus.button(wrongmark_emoji)
+    async def on_deny(self, payload: discord.RawReactionActionEvent):
+        self.result = False
+        self.stop()
+
+    async def send_initial_message(self, ctx: commands.Context, _) -> discord.Message:
+        return await ctx.send(self.content)
+
+    async def prompt(self, ctx: commands.Context) -> typing.Optional[bool]:
+        await self.start(ctx, wait=True)
+        if self.result is None:
+            await ctx.send('Tempo esgotado.')
+
+        return self.result
