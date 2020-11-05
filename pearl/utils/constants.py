@@ -24,3 +24,5 @@ SOFTWARE.
 
 pearkies_emoji = '<:pearkies:758456467324928011>'
 cuteheart_emoji = '<:cuteheart:773701388839419917>'
+checkmark_emoji = '<:checkmark:762675626582736927>'
+wrongmark_emoji = '<:wrongmark:774011356877684779>'
