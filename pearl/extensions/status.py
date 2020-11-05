@@ -36,12 +36,13 @@ class Status(commands.Cog):
     @tasks.loop(minutes=5.0)
     async def set_status(self):
         name, type_ = next(self.activities)
+        name = name.format(users=users, guilds=guilds)
         
         guilds = len(self.bot.guilds)
         users = len(self.bot.users) - 1
 
+        activity = discord.Activity(name=name, type=type_)
         status = discord.Status.dnd
-        activity = discord.Activity(name=name.format(users=users, guilds=guilds), type=type_)
 
         await self.bot.change_presence(activity=activity, status=status)
 
