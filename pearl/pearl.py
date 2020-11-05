@@ -135,6 +135,7 @@ class Pearl(commands.Bot):
         if ctx.author.bot:
             return
 
+        await ctx.trigger_typing()
         await self.invoke(ctx)
 
     async def close(self) -> None:
