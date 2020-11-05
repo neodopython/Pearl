@@ -67,7 +67,7 @@ class Fun(commands.Cog):
             if target not in _ALL_EMOJIS:
                 raise commands.BadArgument()
 
-        cowboy = '⠀ ⠀ ⠀  🤠\n　   {0}{0}{0}\n    {0}   {0}　{0}\n   👇   {0}{0} 👇\n  　  {0}　{0}\n　   {0}　 {0}\n　   👢     👢'
+        cowboy = '⠀ ⠀ ⠀  🤠\n　   {0}{0}{0}\n    {0}   {0}　{0}\n   👇   {0}{0} 👇\n  　  {0}　{0}\n　   {0}　 {0}\n　    👢     👢'
         await ctx.channel.send(cowboy.format(target))
 
     @commands.group(name='ascii', invoke_without_command=True)
