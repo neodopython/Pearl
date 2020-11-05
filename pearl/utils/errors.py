@@ -116,20 +116,20 @@ class ResponseError(CommandError):
 
 
 # TODO: Add docstring for this class.
-class FunException(CommandError):
+class SocialException(CommandError):
     pass
 
 
-class MemberIsAuthor(FunException):
+class MemberIsAuthor(SocialException):
     def __init__(self):
         super().__init__('Member is author')
 
 
-class MemberIsBot(FunException):
+class MemberIsBot(SocialException):
     def __init__(self):
         super().__init__('Member is a bot')
 
 
-class ListHasDuplicates(FunException):
+class ListHasDuplicates(SocialException):
     def __init__(self):
         super().__init__('Members list has duplicates')
