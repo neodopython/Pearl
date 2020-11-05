@@ -52,6 +52,7 @@ import re
 import asyncio
 import typing
 import importlib
+import json
 from datetime import datetime
 
 import discord
@@ -155,7 +156,7 @@ async def create_pool(uri: str, *, loop: asyncio.BaseEventLoop) -> asyncpg.pool.
         return json.loads(value)
 
     async def _init(conn: asyncpg.Connection):
-        await conn.set_type_codec('jsonb', schema='pg_catalog', encoder=_encode_jsonb, decoder=_decode_jsonb)
+        await conn.set_type_codec('jsonb', schema='pg_catalog', encoder=_encode_jsonb, decoder=_decode_jsonb, format='text')
 
     return await asyncpg.create_pool(uri, init=_init, loop=loop)
 
