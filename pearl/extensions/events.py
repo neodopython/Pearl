@@ -82,7 +82,9 @@ class Events(commands.Cog):
             commands.CommandOnCooldown: self.get_cooldown_message,
             BotNotPlaying: 'Eu não estou tocando nenhuma música.',
             commands.BadArgument: 'Argumento inválido.',
-            FontNotFound: self.show_valid_fonts
+            FontNotFound: self.show_valid_fonts,
+            MemberIsAuthor: 'Você não pode fazer isso em si mesmo.',
+            MemberIsBot: 'Tenho certeza que este bot não fez nada errado.'
         }
 
         if type(error) in errors:
