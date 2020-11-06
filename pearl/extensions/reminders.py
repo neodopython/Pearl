@@ -39,7 +39,7 @@ def not_empty():
             fetch = await ctx.pool.fetchrow(query, ctx.author.id)
 
             if not fetch['list']:
-                return await ctx.send('Sua lista já está vazia, não há nada o que deletar.')
+                return await ctx.send('Sua lista de afazeres já está vazia, não há nada o que deletar.')
 
             return await func(self, ctx, *args, **kwargs)
         return wrapped
@@ -66,12 +66,12 @@ class Reminders(commands.Cog):
     @todo.command(name='add')
     async def todo_add(self, ctx: commands.Context, *, to_do: str):
         if len(to_do) >= self.limit:
-            return await ctx.send(f'Seu lembrete não pode ter mais que `{self.limit}` caracteres.')
+            return await ctx.send(f'Seu afazer não pode ter mais que `{self.limit}` caracteres.')
 
         query = 'UPDATE todos SET list = array_append(list, $2) WHERE user_id = $1'
         await ctx.pool.execute(query, ctx.author.id, to_do)
 
-        await ctx.send(f'Adicionado para sua lista: **{to_do}**')
+        await ctx.send(f'Adicionado para sua lista de afazeres: **{to_do}**')
 
     @todo.command(name='list', aliases=['all'])
     async def todo_list(self, ctx: commands.Context, *, member: discord.Member = None):
@@ -84,7 +84,7 @@ class Reminders(commands.Cog):
         values = [f'`{i}.` {value}' for i, value in enumerate(fetch['list'], start=1)]
 
         if not values:
-            return await ctx.send('Não há nada para ver aqui.')
+            return await ctx.send('Não há nenhum afazer nesta lista.')
 
         menu = Menu(values, per_page=12)
         await menu.start(ctx)
@@ -108,19 +108,19 @@ class Reminders(commands.Cog):
         '''
         await ctx.pool.execute(query, ctx.author.id, index)
 
-        await ctx.send(f'O ID `{index}` foi removido da lista.')
+        await ctx.send(f'O ID `{index}` foi removido da lista de afazeres.')
 
     @todo.command(name='clear')
     @not_empty()
     async def todo_clear(self, ctx: commands.Context):
-        result = await ctx.prompt('Você tem certeza que quer deletar toda sua lista?')
+        result = await ctx.prompt('Você tem certeza que quer deletar toda sua lista de afazeres?')
         if not result:
             return
 
         query = 'DELETE FROM todos WHERE user_id = $1'
         await ctx.pool.execute(query, ctx.author.id)
 
-        await ctx.send('Sua lista foi limpa com sucesso.')
+        await ctx.send('Sua lista de afazeres foi limpa com sucesso.')
 
 
 def setup(bot: commands.Bot) -> None:
