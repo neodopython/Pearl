@@ -59,13 +59,13 @@ class Owner(commands.Cog):
 
         raise commands.NotOwner('You do not own this bot')
 
-    @commands.group(aliases=['wd'], invoke_without_command=True, ignore_extra=True)
-    async def watchdog(self, ctx: commands.Context):
+    @commands.group(aliases=['dev'], invoke_without_command=True, ignore_extra=True)
+    async def developer(self, ctx: commands.Context):
         """Comandos para desenvolvedores apenas."""
         pass
 
-    @watchdog.command(name='python', aliases=['py'])
-    async def watchdog_python(self, ctx: commands.Context, *, code: codeblock_converter):
+    @developer.command(name='python', aliases=['py'])
+    async def developer_python(self, ctx: commands.Context, *, code: codeblock_converter):
         """Performa uma evaluação de código em Python."""
         env = self.get_env(ctx)
         stdout = StringIO()
@@ -102,14 +102,14 @@ class Owner(commands.Cog):
             menu = Menu(output, fields=fields, codeblock=True)
             await menu.start(ctx)
 
-    @watchdog.command(name='logout', aliases=['shutdown'])
-    async def watchdog_logout(self, ctx: commands.Context):
+    @developer.command(name='logout', aliases=['shutdown'])
+    async def developer_logout(self, ctx: commands.Context):
         """Logs this bot out."""
         await ctx.send('Desligando. Até mais, 👋.')
         await ctx.bot.logout()
 
-    @watchdog.command(name='load', aliases=['l', 'reload', 'r'])
-    async def watchdog_load(self, ctx: commands.Context, *extensions: str):
+    @developer.command(name='load', aliases=['l', 'reload', 'r'])
+    async def developer_load(self, ctx: commands.Context, *extensions: str):
         """Reloads the given extension names."""
         extensions = extensions or ctx.bot.all_extensions
         paginator = commands.Paginator(prefix='', suffix='')
@@ -132,8 +132,8 @@ class Owner(commands.Cog):
         menu = Menu(paginator.pages)
         await menu.start(ctx)
 
-    @watchdog.command(name='unload', aliaes=['u'])
-    async def watchdog_unload(self, ctx: commands.Context, *extensions: str):
+    @developer.command(name='unload', aliaes=['u'])
+    async def developer_unload(self, ctx: commands.Context, *extensions: str):
         """Unloads the given extension names."""
         paginator = commands.Paginator(prefix='', suffix='')
         icon = '📤'
