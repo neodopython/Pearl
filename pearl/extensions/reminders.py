@@ -60,7 +60,8 @@ class Reminders(commands.Cog):
     @commands.group()
     @commands.before_invoke(insert_into)
     async def todo(self, ctx: commands.Context):
-        pass
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(self.todo)
 
     @todo.command(name='add')
     async def todo_add(self, ctx: commands.Context, *, to_do: str):
