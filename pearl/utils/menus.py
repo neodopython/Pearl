@@ -62,7 +62,7 @@ class Menu(_BaseMenu):
 class TextPaginator(menus.ListPageSource):
     def __init__(self, text: str, **kwargs):
         wrapped = textwrap.wrap(text, width=2012)
-        data = [f'{item}...' if item != wrapped[-1] else item for item in wrapped] or ['[empty string]']
+        data = [f'{item} ...' if item != wrapped[-1] else item for item in wrapped] or ['[empty string]']
 
         self.codeblock = kwargs.pop('codeblock', False)
         self.kwargs = kwargs
