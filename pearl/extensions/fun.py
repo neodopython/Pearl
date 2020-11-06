@@ -31,7 +31,6 @@ from pyfiglet import Figlet, FigletFont
 from asyncdagpi import ImageFeatures
 
 from utils.errors import ResponseError
-from utils.menus import Menu
 
 
 _ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
@@ -83,8 +82,7 @@ class Fun(commands.Cog):
         all_fonts = FigletFont.getFonts()
         fonts = [f'`{font}`' for font in all_fonts]
 
-        menu = Menu(', '.join(fonts))
-        await menu.start(ctx)
+        await ctx.paginate(', '.join(fonts))
 
     @commands.command()
     async def wasted(self, ctx: commands.Context, *, member: discord.Member = None):

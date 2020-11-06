@@ -34,7 +34,6 @@ from discord.ext import commands
 
 from utils.codeblocks import codeblock_converter
 from utils.repl import ExceptionReactor
-from utils.menus import Menu
 
 
 class Owner(commands.Cog):
@@ -99,8 +98,7 @@ class Owner(commands.Cog):
             output = str(value or ret).replace(ctx.bot.http.token, '[token omitted]')
             fields = [{'name': 'Retornou', 'value': f'```css\n{type(ret)}```'}]
 
-            menu = Menu(output, fields=fields, codeblock=True)
-            await menu.start(ctx)
+            await ctx.paginate(output, fields=fields, codeblock=True)
 
     @developer.command(name='logout', aliases=['shutdown'])
     async def developer_logout(self, ctx: commands.Context):
@@ -129,8 +127,7 @@ class Owner(commands.Cog):
             else:
                 paginator.add_line(f'{icon} `{extension}`')
 
-        menu = Menu(paginator.pages)
-        await menu.start(ctx)
+        await ctx.paginate(paginator.pages)
 
     @developer.command(name='unload', aliaes=['u'])
     async def developer_unload(self, ctx: commands.Context, *extensions: str):
@@ -147,8 +144,7 @@ class Owner(commands.Cog):
             else:
                 paginator.add_line(f'📤 `{extension}`')
 
-        menu = Menu(paginator.pages)
-        await menu.start(ctx)
+        await ctx.paginate(paginator.pages)
 
 
 def setup(bot: commands.Bot) -> None:

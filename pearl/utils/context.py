@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from typing import Optional
+from typing import Optional, Union, List
 
 import asyncpg
 import discord
 from discord.ext import commands
 
 from .embed import Embed
-from .menus import Confirm
+from .menus import Confirm, Menu
 
 
 class Context(commands.Context):
@@ -79,3 +79,7 @@ class Context(commands.Context):
     async def prompt(self, content: str) -> Optional[bool]:
         confirm = Confirm(content)
         return await confirm.prompt(self)
+
+    async def paginate(self, data: Union[str, List[str]], **kwargs) -> None:
+        menu = Menu(data, **kwargs)
+        await menu.start(self)

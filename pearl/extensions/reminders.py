@@ -28,7 +28,6 @@ import discord
 from discord.ext import commands
 
 from utils.errors import *
-from utils.menus import Menu
 
 
 def not_empty():
@@ -86,8 +85,7 @@ class Reminders(commands.Cog):
         if not values:
             return await ctx.send('Não há nenhum afazer nesta lista.')
 
-        menu = Menu(values, per_page=12)
-        await menu.start(ctx)
+        await ctx.paginate(values, per_page=12)
 
     @todo.command(name='remove', aliases=['delete'])
     @not_empty()

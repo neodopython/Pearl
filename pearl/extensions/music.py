@@ -36,7 +36,6 @@ from discord.ext import commands
 
 import config
 from utils.errors import *
-from utils.menus import Menu
 
 
 url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
@@ -403,8 +402,7 @@ class Music(commands.Cog):
         for index, track in enumerate(queue, start=1):
             titles.append(f'`{index}.` **{self.escape_markdown(track.title)}** ({track.author})')
 
-        menu = Menu(titles or 'Não há nada na playlist.', per_page=12)
-        await menu.start(ctx)
+        await ctx.paginate(titles or 'Não há nenhuma música na lista.', per_page=12)
 
     @commands.command()
     async def shuffle(self, ctx: commands.Context):
