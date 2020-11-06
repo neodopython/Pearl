@@ -83,7 +83,11 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> Tuple[str]:
 
 class Pearl(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=get_prefix, intents=discord.Intents.all())
+        super().__init__(
+            command_prefix=get_prefix,
+            intents=discord.Intents.all(),
+            allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False)
+        )
         run = self.loop.run_until_complete
 
         self.pool = run(create_pool(config.postgres, loop=self.loop))
