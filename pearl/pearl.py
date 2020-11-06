@@ -122,7 +122,7 @@ class Pearl(commands.Bot):
         return importlib.import_module('utils.constants')
 
     async def on_message(self, message: discord.Message) -> None:
-        """Event overwritten to ignore guilds."""
+        """Event overwritten to ignore direct messages."""
         if not message.guild:
             return
 
