@@ -84,6 +84,7 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> Tuple[str]:
 class Pearl(commands.Bot):
     def __init__(self):
         _intents = discord.Intents.none()
+        _intents.members = True
         _intents.guilds = True
         _intents.emojis = True
         _intents.voice_states = True
