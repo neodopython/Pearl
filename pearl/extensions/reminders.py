@@ -45,7 +45,9 @@ def not_empty():
     return wrapper
 
 
-class Reminders(commands.Cog):
+class Reminders(commands.Cog, name='Lembretes'):
+    """Comando de lembretes para você não esquecer de algo importante."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.limit = 165

@@ -36,7 +36,9 @@ from utils.codeblocks import codeblock_converter
 from utils.repl import ExceptionReactor
 
 
-class Owner(commands.Cog):
+class Owner(commands.Cog, name='Desenvolvedores'):
+    """Comando exclusivo para desenvolvedores do bot."""
+
     def __init__(self, bot: commands.Cog):
         self.bot = bot
         self._last_result = None

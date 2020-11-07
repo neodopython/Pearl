@@ -28,7 +28,9 @@ import discord
 from discord.ext import commands
 
 
-class Currency(commands.Cog):
+class Currency(commands.Cog, name='Monetário'):
+    """Comandos relacionados ao sistema monetário."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

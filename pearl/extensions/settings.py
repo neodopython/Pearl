@@ -25,7 +25,9 @@ SOFTWARE.
 from discord.ext import commands
 
 
-class Settings(commands.Cog):
+class Settings(commands.Cog, name='Configurações'):
+    """Configurações do servidor ou do próprio bot."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.limit = 6

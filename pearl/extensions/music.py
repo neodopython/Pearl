@@ -41,7 +41,9 @@ from utils.errors import *
 url_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
 
-class Music(commands.Cog):
+class Music(commands.Cog, name='Música'):
+    """Comandos que fazem o bot tocar um batidão."""
+    
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

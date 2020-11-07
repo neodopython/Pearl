@@ -28,7 +28,9 @@ import humanize
 from discord.ext import commands
 
 
-class Stats(commands.Cog):
+class Stats(commands.Cog, name='Estatísticas'):
+    """Comandos que mostram algumas estatísticas do bot."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

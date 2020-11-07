@@ -36,7 +36,9 @@ from utils.errors import ResponseError
 _ALL_EMOJIS = list(emoji.EMOJI_UNICODE.values())
 
 
-class Fun(commands.Cog):
+class Fun(commands.Cog, name='Diversão'):
+    """Comandos feitos para proporcionar diversão."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
