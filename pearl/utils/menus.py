@@ -59,6 +59,7 @@ class InvalidData(Exception):
         super().__init__('Invalid data type')
 
 
+# generic menu
 class _BaseMenu(menus.MenuPages):
     async def update(self, payload: discord.RawReactionActionEvent):
         if self._can_remove_reactions:
@@ -115,6 +116,7 @@ class ListPaginator(menus.ListPageSource):
         return embed
 
 
+# confirm menu
 class Confirm(menus.Menu):
     def __init__(self, content: str):
         super().__init__(delete_message_after=True, check_embeds=True)
