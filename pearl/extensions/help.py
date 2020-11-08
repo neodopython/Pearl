@@ -142,7 +142,7 @@ class Help(commands.Cog, name='Ajuda'):
         time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(timezone)
         delta = time.astimezone(datetime.timezone.utc).replace(tzinfo=None)
 
-        offset = humanize.precisedelta(delta, format='%0.0f')
+        offset = humanize.precisedelta(delta - datetime.datetime.utcnow(), format='%0.0f')
         return f'[`{sha2}`]({REPO_URL}/commit/{commit.hex}) {short} (há {offset})'
 
     def get_last_commits(self, count: int = 3) -> str:
