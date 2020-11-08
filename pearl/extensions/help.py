@@ -45,12 +45,21 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 '''
 
+import itertools
+import datetime
+import pkg_resources
+import sys
 from typing import Mapping, Optional, List
 
 import discord
+import pygit2
+import humanize
 from discord.ext import commands
 
 from utils.menus import HelpMenu, BotHelpInterface, GroupHelpInterface
+
+
+REPO_URL = 'https://github.com/webkaiyo/Pearl'
 
 
 class HelpCommand(commands.HelpCommand):
@@ -124,6 +133,70 @@ class Help(commands.Cog, name='Ajuda'):
 
     def cog_unload(self):
         self.bot.help_command = self._original_help
+
+    def format_commit(self, commit: pygit2.Object) -> str:
+        short, _, _ = commit.message.partition('\n')
+        sha2 = commit.hex[0:6]
+        
+        timezone = datetime.timezone(datetime.timedelta(minutes=commit.commit_time_offset))
+        time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(timezone)
+        delta = time.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+
+        offset = humanize.precisedelta(delta, format='%0.0f')
+        return f'[`{sha2}`]({REPO_URL}/commit/{commit.hex}) {short} (há {offset})'
+
+    def get_last_commits(self, count: int = 3) -> str:
+        repo = pygit2.Repository('../.git')
+        commits = list(itertools.islice(repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count))
+        return '\n'.join(self.format_commit(commit) for commit in commits)
+
+    @commands.command()
+    async def about(self, ctx: commands.Context):
+        """Diz informações sobre o bot em si."""
+        fields = [{'name': 'Últimas alterações', 'value': self.get_last_commits(), 'inline': False}]
+
+        app_info = await ctx.bot.application_info()
+        bot_name = ctx.bot.user.name
+        oauth_url = discord.utils.oauth_url(ctx.bot.user.id, permissions=discord.Permissions.all())
+
+        dpy_version = pkg_resources.get_distribution('discord.py').version
+        py_version = '.'.join(str(v) for v in sys.version_info[:3])
+
+        content = f'Olá, sou a {bot_name}. Sou um bot de código-aberto feito para você.\n' \
+                  f'Fui feita pelo `{app_info.owner}` com o intuito de ser útil e fácil de uso.\n' \
+                  f'Fui desenvolvida em Python {py_version} com `discord.py v{dpy_version}`.'
+
+        guilds = 0
+        users = len(ctx.bot.users)
+
+        text = 0
+        voice = 0
+        category = 0
+
+        for guild in ctx.bot.guilds:
+            guilds += 1
+            for channel in guild.channels:
+                if isinstance(channel, discord.TextChannel):
+                    text += 1
+                elif isinstance(channel, discord.VoiceChannel):
+                    voice += 1
+                elif isinstance(channel, discord.CategoryChannel):
+                    category += 1
+
+        uptime = datetime.datetime.utcnow() - ctx.bot.uptime
+        delta = humanize.precisedelta(uptime, format='%0.0f')
+
+        stats = f'Estou em {guilds} servidores e conheço {users} usuários diferentes.\n' \
+                f'Consigo ver {text} canais de texto, {voice} canais de voz e {category} canais de categorias.\n' \
+                f'Eu estou online há {delta}.'
+        fields.append({'name': 'Estatísticas', 'value': stats})
+
+        useful_links = f'[GitHub]({REPO_URL})\n' \
+                       f'[Servidor de suporte](https://discord.gg/9JMc9Z3ZNX)\n' \
+                       f'[Me convide]({oauth_url})'
+        fields.append({'name': 'Links úteis', 'value': useful_links, 'inline': False})
+
+        await ctx.send(content, fields=fields)
 
 
 def setup(bot: commands.Bot) -> None:
