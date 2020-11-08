@@ -34,6 +34,7 @@ from discord.ext import commands
 
 from utils.codeblocks import codeblock_converter
 from utils.repl import ExceptionReactor
+from utils.models import copy_context_with
 
 
 class Owner(commands.Cog, name='Desenvolvedores'):
@@ -147,6 +148,26 @@ class Owner(commands.Cog, name='Desenvolvedores'):
                 paginator.add_line(f'📤 `{extension}`')
 
         await ctx.paginate(paginator.pages)
+
+    @developer.command(name='su', aliases=['as'])
+    async def developer_su(self, ctx: commands.Context, target: discord.Member, *, command):
+        ctx = await copy_context_with(ctx, author=target, content=ctx.prefix + command)
+
+        if not ctx.command:
+            return await ctx.send('Comando não encontrado.')
+
+        async with ExceptionReactor(ctx):
+            await ctx.command.invoke(ctx)
+
+    @developer.command(name='in')
+    async def developer_in(self, ctx: commands.Context, channel: discord.TextChannel, *, command):
+        ctx = await copy_context_with(ctx, channel=channel, content=ctx.prefix + command)
+
+        if not ctx.command:
+            return await ctx.send('Comando não encontrado.')
+
+        async with ExceptionReactor(ctx):
+            await ctx.command.invoke(ctx)
 
 
 def setup(bot: commands.Bot) -> None:
