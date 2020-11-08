@@ -74,14 +74,7 @@ class Owner(commands.Cog, name='Desenvolvedores'):
 
         code = list(filter(lambda x: x != '', re.sub(r';\s?', '\n', code.content).split('\n')))
         
-        cannot_starts_with = ('return', 'import', 'from', '  ')
-        invalid_startswith = False
-
-        for word in cannot_starts_with:
-            if code[-1].startswith(word):
-                invalid_startswith = True
-
-        if not invalid_startswith:
+        if not re.match(r'(?:(?:from\s\.?\w*\s)?import\s(?:\*|\w)*|return\s\w*|\w*\s?=\s?\w*)', code[-1]):
             code[-1] = f'return {code[-1]}'
 
         body = textwrap.indent('\n'.join(code), '  ')
