@@ -162,7 +162,8 @@ class BotHelpInterface(menus.ListPageSource):
         prefix = ctx.prefix
 
         content = f'Digite `{prefix}help <comando>` para saber mais sobre um comando.\n' \
-                  f'Digite `{prefix}help <categoria>` para saber mais sobre uma categoria.'
+                  f'Digite `{prefix}help <categoria>` para saber mais sobre uma categoria.\n' \
+                  f'Entre no meu [servidor](https://discord.gg/9JMc9Z3ZNX) para obter mais suporte.'
 
         fields = []
 
