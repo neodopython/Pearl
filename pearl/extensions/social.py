@@ -33,6 +33,8 @@ from utils.formats import human_join
 
 
 class Social(commands.Cog):
+    '''Comandos de interações sociais.'''
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
