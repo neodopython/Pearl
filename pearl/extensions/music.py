@@ -61,9 +61,9 @@ class Music(commands.Cog, name='Música'):
         return discord.utils.escape_markdown(text)
 
     def has_dj_permissions(self, player: lavalink.DefaultPlayer, ctx: commands.Context) -> bool:
-        is_dj = ctx.author == player.fetch('dj')
+        is_dj = ctx.author.id == player.fetch('dj')
         is_admin = ctx.author.guild_permissions.manage_channels
-        return True if is_dj or is_admin else False
+        return is_dj or is_admin
 
     async def track_hook(self, event: lavalink.Event) -> None:
         if isinstance(event, lavalink.events.QueueEndEvent):
