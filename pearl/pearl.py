@@ -121,6 +121,10 @@ class Pearl(commands.Bot):
     def constants(self):
         return importlib.import_module('utils.constants')
 
+    @property
+    def uptime(self):
+        return datetime.utcnow() - self.start_datetime
+
     async def on_message(self, message: discord.Message) -> None:
         """Event overwritten to ignore direct messages."""
         if not message.guild:
@@ -130,8 +134,8 @@ class Pearl(commands.Bot):
 
     async def on_ready(self) -> None:
         """Loads all extensions when bot is ready."""
-        if not hasattr(self, 'uptime'):
-            self.uptime = datetime.utcnow()
+        if not hasattr(self, 'start_datetime'):
+            self.start_datetime = datetime.utcnow()
 
         for extension in self.all_extensions:
             try:

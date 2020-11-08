@@ -155,9 +155,10 @@ class Help(commands.Cog, name='Ajuda'):
         """Diz informações sobre o bot em si."""
         fields = [{'name': 'Últimas alterações', 'value': self.get_last_commits(), 'inline': False}]
 
-        app_info = await ctx.bot.application_info()
         bot_name = ctx.bot.user.name
+        app_info = await ctx.bot.application_info()
         oauth_url = discord.utils.oauth_url(ctx.bot.user.id, permissions=discord.Permissions.all())
+        uptime = humanize.precisedelta(ctx.bot.uptime, format='%0.0f')
 
         dpy_version = pkg_resources.get_distribution('discord.py').version
         py_version = '.'.join(str(v) for v in sys.version_info[:3])
@@ -183,12 +184,9 @@ class Help(commands.Cog, name='Ajuda'):
                 elif isinstance(channel, discord.CategoryChannel):
                     category += 1
 
-        uptime = datetime.datetime.utcnow() - ctx.bot.uptime
-        delta = humanize.precisedelta(uptime, format='%0.0f')
-
         stats = f'Estou em {guilds} servidores e conheço {users} usuários diferentes.\n' \
                 f'Consigo ver {text} canais de texto, {voice} canais de voz e {category} canais de categorias.\n' \
-                f'Eu estou online há {delta}.'
+                f'Eu estou online há {uptime}.'
         fields.append({'name': 'Estatísticas', 'value': stats})
 
         useful_links = f'[GitHub]({REPO_URL})\n' \
