@@ -140,10 +140,10 @@ class Help(commands.Cog, name='Ajuda'):
         
         timezone = datetime.timezone(datetime.timedelta(minutes=commit.commit_time_offset))
         time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(timezone)
-        delta = time.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+        offset = time.astimezone(datetime.timezone.utc).replace(tzinfo=None)
 
-        offset = humanize.precisedelta(delta - datetime.datetime.utcnow(), format='%0.0f')
-        return f'[`{sha2}`]({REPO_URL}/commit/{commit.hex}) {short} (há {offset})'
+        delta = humanize.precisedelta(offset - datetime.datetime.utcnow(), format='%0.0f')
+        return f'[`{sha2}`]({REPO_URL}/commit/{commit.hex}) {short} (há {delta})'
 
     def get_last_commits(self, count: int = 3) -> str:
         repo = pygit2.Repository('../.git')
