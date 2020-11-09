@@ -87,5 +87,7 @@ class ExceptionReactor:
         else:
             verbosity = 8
 
+        await self.ctx.message.add_reaction('❗')
         await send_traceback(self.ctx, verbosity, type_, value, traceback)
+
         return True
