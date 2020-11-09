@@ -125,7 +125,7 @@ class Owner(commands.Cog, name='Desenvolvedores'):
 
         await ctx.paginate(paginator.pages)
 
-    @developer.command(name='unload', aliaes=['u'])
+    @developer.command(name='unload', aliases=['u'])
     async def developer_unload(self, ctx: commands.Context, *extensions: str):
         """Unloads the given extension names."""
         paginator = commands.Paginator(prefix='', suffix='')
