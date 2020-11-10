@@ -48,6 +48,7 @@ DEALINGS IN THE SOFTWARE.
 import inspect
 import os
 
+import discord
 from discord.ext import commands
 
 
@@ -88,6 +89,14 @@ class Meta(commands.Cog):
         final_url = f'{source_url}/blob/{branch}/{location}#L{first_line}-L{first_line + len(lines) - 1}'
         await ctx.send(final_url)
 
+    @commands.command()
+    async def avatar(self, ctx: commands.Context, member: discord.Member = None):
+        member = member or ctx.author
+
+        avatar = str(member.avatar_url_as(static_format='png'))
+        content = f'Faça o download dessa imagem clicando [aqui]({avatar}).'
+
+        await ctx.send(content, image=avatar)
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Meta(bot))
