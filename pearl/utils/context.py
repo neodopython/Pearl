@@ -58,6 +58,15 @@ class Context(commands.Context):
         """Returns Dagpi's client."""
         return self.bot.dagpi
 
+    def progress_bar(self, percentage: int, *, lenght: int = 20) -> str:
+        filled_char = '█'
+        empty_char = ' '
+
+        filled_amount = int((lenght * percentage / 100))
+        empty_amount = int(lenght - filled_amount)
+
+        return f'[{filled_char * filled_amount}{empty_char * empty_amount}]'
+
     def get_embed(self, content: str = None, **kwargs) -> Embed:
         """Returns a ready-to-use embed with given content."""
         author = kwargs.pop('author', {

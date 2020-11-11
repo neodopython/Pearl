@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import random
 from typing import Union
 
 import discord
@@ -41,6 +42,26 @@ class Fun(commands.Cog, name='Diversão'):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    async def get_ship(self, first: discord.Member, second: discord.Member):
+        query = 'SELECT * FROM ships WHERE users = ARRAY[$1, $2]::bigint[]'
+        fetch = await self.bot.pool.fetchrow(query, first.id, second.id)
+
+        if fetch:
+            percentage = fetch['percentage']
+            name = fetch['name']
+            return (name, percentage)
+
+        first_half = first.name[int(len(first.name) / 2):]
+        second_half = second.name[:int(len(second.name) / 2) + 1]
+
+        name = first_half + second_half
+        percentage = random.randint(0, 100)
+
+        query = 'INSERT INTO ships VALUES ($1, $2, $3)'
+        await self.bot.pool.execute(query, [first.id, second.id], percentage, name)
+
+        return (name, percentage)
 
     @commands.command(aliases=['randomcat'])
     async def cat(self, ctx: commands.Context):
@@ -170,6 +191,16 @@ class Fun(commands.Cog, name='Diversão'):
         file = discord.File(fp=image.image, filename=filename)
 
         await ctx.send(file=file, image=f'attachment://{filename}')
+
+    @commands.command()
+    async def ship(self, ctx: commands.Context, first: discord.Member, second: discord.Member):
+        name, percentage = await self.get_ship(first, second)
+        progress_bar = ctx.progress_bar(percentage)
+
+        content = f'Usuários: {first.mention} e {second.mention}\n' \
+                  f'Nome: **{name}**\n\n' \
+                  f'**{percentage}%**\n`{progress_bar}`'
+        await ctx.send(content)        
 
 
 def setup(bot: commands.Bot) -> None:
